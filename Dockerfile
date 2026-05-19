@@ -33,6 +33,11 @@ ENV DATA_DIR=/app/data
 # Uncomment the following line in case you want to disable telemetry during the build.
 # ENV NEXT_TELEMETRY_DISABLED=1
 
+# Embed git commit hash into the build so /api/version can report it.
+# Falls back to "unknown" when .git is absent (e.g. archive-based builds).
+RUN GIT_COMMIT=$(cat .git-commit 2>/dev/null || git rev-parse --short HEAD 2>/dev/null || echo "unknown") && \
+    echo "NEXT_PUBLIC_GIT_COMMIT=$GIT_COMMIT" >> .env.production
+
 RUN \
     if [ -f yarn.lock ]; then yarn run build; \
     elif [ -f package-lock.json ]; then npm run build; \

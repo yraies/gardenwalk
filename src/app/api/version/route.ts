@@ -1,0 +1,9 @@
+import { NextResponse } from "next/server";
+import packageJson from "../../../../package.json";
+
+export async function GET() {
+  return NextResponse.json({
+    version: packageJson.version,
+    commit: process.env.NEXT_PUBLIC_GIT_COMMIT || "dev",
+  });
+}
