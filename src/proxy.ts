@@ -3,7 +3,7 @@ import { type NextRequest, NextResponse } from "next/server";
 /** Maximum request body size for API routes (5 MB) */
 const MAX_BODY_SIZE = 5 * 1024 * 1024;
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   // --- Body size limit for API routes ---
   if (request.nextUrl.pathname.startsWith("/api/")) {
     const contentLength = request.headers.get("content-length");

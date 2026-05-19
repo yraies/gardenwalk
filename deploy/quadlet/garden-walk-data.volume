@@ -1,0 +1,8 @@
+[Unit]
+Description=Persistent volume for Garden Walk SQLite data
+
+[Volume]
+VolumeName=garden-walk-data
+
+[Install]
+WantedBy=default.target

@@ -43,6 +43,40 @@ podman run -d \
 
 Access at `http://localhost:3000`
 
+### Quadlet (Podman + Caddy)
+
+If you run Garden Walk behind a local Caddy reverse proxy on the same host,
+use the provided Quadlet container file:
+
+- Copy `deploy/quadlet/garden-walk.container` to
+  `~/.config/containers/systemd/garden-walk.container`
+- Copy `deploy/quadlet/garden-walk-data.volume` to
+  `~/.config/containers/systemd/garden-walk-data.volume`
+- Create `~/.config/garden-walk/garden-walk.env` with at least:
+
+```bash
+ARTIFACT_ENCRYPTION_KEY=replace-with-a-long-random-secret
+```
+
+- Reload and start the user service:
+
+```bash
+systemctl --user daemon-reload
+systemctl --user enable --now garden-walk.service
+```
+
+The Quadlet binds the app only to `127.0.0.1:3000`, so Caddy can proxy it
+without exposing the container port directly to the network. Persistent data
+is stored in the named Podman volume `garden-walk-data`.
+
+Example Caddy snippet:
+
+```caddy
+garden-walk.example.com {
+  reverse_proxy 127.0.0.1:3000
+}
+```
+
 ## 🛠️ Development
 
 ```bash

@@ -1,0 +1,37 @@
+# Install this file to:
+#   ~/.config/containers/systemd/garden-walk.container
+# Also install:
+#   ~/.config/containers/systemd/garden-walk-data.volume
+#
+# Expected companion env file:
+#   ~/.config/garden-walk/garden-walk.env
+# with at least:
+#   ARTIFACT_ENCRYPTION_KEY=<long-random-secret>
+
+[Unit]
+Description=Garden Walk container
+After=network-online.target
+Wants=network-online.target
+
+[Container]
+ContainerName=garden-walk
+Image=ghcr.io/yraies/smallpaws:latest
+Pull=never
+
+# Only expose the app locally; let Caddy handle public TLS/HTTP.
+PublishPort=127.0.0.1:3000:3000
+
+Environment=DATA_DIR=/app/data
+EnvironmentFile=%h/.config/garden-walk/garden-walk.env
+
+# Persistent SQLite storage in a named Podman volume.
+Volume=garden-walk-data.volume:/app/data
+
+AutoUpdate=none
+
+[Service]
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=default.target

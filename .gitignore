@@ -48,3 +48,6 @@ next-env.d.ts
 # chrome testing
 .chrome-logs/
 .chromium-profile/
+
+# container image exports
+*.tar

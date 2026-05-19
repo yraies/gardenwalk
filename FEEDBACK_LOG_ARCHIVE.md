@@ -36,6 +36,18 @@ Required fields for new entries:
 
 ## Entries
 
+### F-028 (2026-04-28) - Provide a proper Quadlet for local HTTP behind Caddy
+
+- **Date**: 2026-04-28
+- **Source**: Stakeholder chat
+- **Exact Quote**: "can you write me a proper quadlet container file which exposes the proper http port, so I can put it behind a caddy reverse proxy?"
+- **Normalized Intent**: Deployment support should include a Podman Quadlet container definition suitable for reverse-proxying through Caddy on the same host.
+- **Feedback**: The repo should provide a ready-to-use Quadlet that binds Garden Walk to a local HTTP port for Caddy, uses persistent storage, and supports the required runtime secret configuration.
+- **Action taken**: Added `deploy/quadlet/garden-walk.container` with localhost-only port binding, persistent data volume, and env-file based secret loading. Updated `README.md` with install steps and a matching Caddy `reverse_proxy` example.
+- **Follow-up (2026-04-29):** Stakeholder clarified, "oh, please change to a named podman volume instead of a bind mount"
+- **Normalized Intent (follow-up)**: The supported Quadlet deployment should use a named Podman volume for persistent data instead of a host bind mount, to avoid host-path ownership issues.
+- **Action taken (follow-up)**: Added `deploy/quadlet/garden-walk-data.volume`, changed the container unit to mount `garden-walk-data.volume:/app/data`, and updated `README.md` to install/start both Quadlet units.
+
 ### F-027 (2026-04-28) - Autumn theme needs a stronger identity distinct from summer
 
 - **Date**: 2026-04-28
