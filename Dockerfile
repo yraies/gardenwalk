@@ -20,6 +20,7 @@ RUN \
 
 # Rebuild the source code only when needed
 FROM base AS builder
+ARG GIT_COMMIT=unknown
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
@@ -34,9 +35,7 @@ ENV DATA_DIR=/app/data
 # ENV NEXT_TELEMETRY_DISABLED=1
 
 # Embed git commit hash into the build so /api/version can report it.
-# Falls back to "unknown" when .git is absent (e.g. archive-based builds).
-RUN GIT_COMMIT=$(cat .git-commit 2>/dev/null || git rev-parse --short HEAD 2>/dev/null || echo "unknown") && \
-    echo "NEXT_PUBLIC_GIT_COMMIT=$GIT_COMMIT" >> .env.production
+RUN echo "NEXT_PUBLIC_GIT_COMMIT=$GIT_COMMIT" >> .env.production
 
 RUN \
     if [ -f yarn.lock ]; then yarn run build; \
