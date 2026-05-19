@@ -80,12 +80,14 @@ garden-walk.example.com {
 ## 🛠️ Development
 
 ```bash
-npm install          # Install dependencies
-npm run dev          # Dev server (localhost:3000)
-npm run build        # Production build
-npm test             # Jest unit tests
-npm run lint         # Biome check (lint + format check)
-npm run format       # Biome format --write
+npm install              # Install dependencies
+npm run dev              # Dev server (localhost:3000)
+npm run build            # Production build
+npm test                 # Jest unit tests
+npm run lint             # Biome check (lint + format check)
+npm run format           # Biome format --write
+npm run container:build  # Build container image with git commit hash
+npm run container:save   # Save container image as .tar for transfer
 ```
 
 ## 📚 Documentation Map
