@@ -304,7 +304,7 @@ function SharedFormPageContent() {
         formName={formName || "Shared Form"}
         isEncrypted={isFormEncrypted}
         readOnly={true}
-        notice={<FormPhaseBanner phase="shared" />}
+        badge={<FormPhaseBanner phase="shared" />}
         overlay={shareInfo ? <ShareInfoOverlay shareInfo={shareInfo} /> : null}
       >
         <PasswordModal
@@ -412,7 +412,7 @@ function SharedFormPageContent() {
           }
         />
       }
-      notice={<FormPhaseBanner phase="shared" />}
+      badge={<FormPhaseBanner phase="shared" />}
       overlay={shareInfo ? <ShareInfoOverlay shareInfo={shareInfo} /> : null}
     >
       <PrintAnswerLegend answerOptions={form.answerOptions} />

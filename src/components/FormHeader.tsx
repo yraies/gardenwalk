@@ -1,3 +1,4 @@
+import type React from "react";
 import EncryptionStatus from "./EncryptionStatus";
 
 interface FormHeaderProps {
@@ -7,6 +8,7 @@ interface FormHeaderProps {
   readOnly?: boolean;
   respondentName?: string;
   onRespondentNameChange?: (name: string) => void;
+  badge?: React.ReactNode;
 }
 
 export default function FormHeader({
@@ -16,11 +18,13 @@ export default function FormHeader({
   readOnly = false,
   respondentName,
   onRespondentNameChange,
+  badge,
 }: FormHeaderProps) {
   const hasRespondentField =
     onRespondentNameChange !== undefined || respondentName !== undefined;
 
-  return (
+  return (<>
+      {badge && <div className="absolute top-1 right-1 z-10 max-w-5 table">{badge}</div>}
     <div className="document-sheet relative mb-4">
       {/* Title: always read-only when respondent field is shown */}
       <div className="mb-4 flex items-center justify-center gap-2 text-center">
@@ -79,5 +83,6 @@ export default function FormHeader({
         </div>
       )}
     </div>
+    </>
   );
 }

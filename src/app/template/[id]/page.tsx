@@ -291,7 +291,7 @@ function TemplatePageContent() {
           }
         />
       }
-      notice={
+      badge={
         <DocumentPhaseBadge
           label={isFinalized ? "Finalized Template" : "Template Draft"}
           tone={isFinalized ? "finalized" : "draft"}

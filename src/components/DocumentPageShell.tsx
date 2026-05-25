@@ -9,6 +9,7 @@ interface DocumentPageShellProps {
   respondentName?: string;
   onRespondentNameChange?: (name: string) => void;
   actions?: React.ReactNode;
+  badge?: React.ReactNode;
   notice?: React.ReactNode;
   overlay?: React.ReactNode;
   children: React.ReactNode;
@@ -22,6 +23,7 @@ export default function DocumentPageShell({
   respondentName,
   onRespondentNameChange,
   actions,
+  badge,
   notice,
   overlay,
   children,
@@ -35,6 +37,7 @@ export default function DocumentPageShell({
         readOnly={readOnly}
         respondentName={respondentName}
         onRespondentNameChange={onRespondentNameChange}
+        badge={badge}
       />
 
       {actions}

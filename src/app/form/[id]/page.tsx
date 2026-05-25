@@ -275,7 +275,7 @@ function FormPageContent() {
         }
         readOnly={isPublished}
         actions={<FormActionButtons />}
-        notice={<FormPhaseBanner phase={isPublished ? "published" : "draft"} />}
+        badge={<FormPhaseBanner phase={isPublished ? "published" : "draft"} />}
       >
         <PrintAnswerLegend answerOptions={form.answerOptions} />
 

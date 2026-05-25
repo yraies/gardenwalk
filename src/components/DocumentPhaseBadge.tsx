@@ -25,34 +25,32 @@ export default function DocumentPhaseBadge({
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div
-      className={`fixed top-14 right-2 z-20 print:hidden lg:right-6 xl:right-10`}
-    >
-      <div className="relative">
-        <button
-          type="button"
-          className={`border bg-th-paper px-2 py-0.5 text-xs font-semibold uppercase tracking-widest ${toneClasses[tone]}`}
-          onMouseEnter={() => setIsOpen(true)}
-          onMouseLeave={() => setIsOpen(false)}
-          onFocus={() => setIsOpen(true)}
-          onBlur={() => setIsOpen(false)}
-          onClick={() => setIsOpen((v) => !v)}
-          aria-label={`${label}. ${description}${meta ? ` ${meta}` : ""}`}
-          aria-expanded={isOpen}
-        >
-          {label}
-        </button>
+    <div className="relative print:hidden">
+      <button
+        type="button"
+        className={`border bg-th-paper px-2 py-0.5 text-xs font-semibold uppercase tracking-widest ${
+          toneClasses[tone]
+        }`}
+        onMouseEnter={() => setIsOpen(true)}
+        onMouseLeave={() => setIsOpen(false)}
+        onFocus={() => setIsOpen(true)}
+        onBlur={() => setIsOpen(false)}
+        onClick={() => setIsOpen((v) => !v)}
+        aria-label={`${label}. ${description}${meta ? ` ${meta}` : ""}`}
+        aria-expanded={isOpen}
+      >
+        {label}
+      </button>
 
-        {isOpen && (
-          <div
-            role="tooltip"
-            className="absolute right-0 top-full mt-1 w-52 border border-th-line bg-th-paper px-3 py-2 shadow-md"
-          >
-            <p className="text-xs text-th-ink">{description}</p>
-            {meta && <p className="mt-1 text-xs text-th-ink-muted">{meta}</p>}
-          </div>
-        )}
-      </div>
+      {isOpen && (
+        <div
+          role="tooltip"
+          className="absolute right-0 top-full mt-1 w-52 border border-th-line bg-th-paper px-3 py-2 shadow-md"
+        >
+          <p className="text-xs text-th-ink">{description}</p>
+          {meta && <p className="mt-1 text-xs text-th-ink-muted">{meta}</p>}
+        </div>
+      )}
     </div>
   );
 }
