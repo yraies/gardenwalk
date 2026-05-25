@@ -36,6 +36,16 @@ function AutoGrowTextarea({
     adjustHeight();
   }, [value, adjustHeight]);
 
+  // Re-measure when the element's width changes (e.g. window resize,
+  // container layout shift) so long questions don't stay truncated.
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const observer = new ResizeObserver(() => adjustHeight());
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [adjustHeight]);
+
   return (
     <textarea
       ref={ref}
