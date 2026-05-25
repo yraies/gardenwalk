@@ -1,8 +1,14 @@
+"use client";
+
+import { ChevronDownIcon, ChevronRightIcon } from "@heroicons/react/16/solid";
+import { useState } from "react";
+
 interface DocumentPhaseNoticeProps {
   label: string;
   description: string;
   tone?: "draft" | "finalized" | "published" | "shared";
   meta?: string;
+  defaultExpanded?: boolean;
 }
 
 const toneClasses = {
@@ -17,14 +23,36 @@ export default function DocumentPhaseNotice({
   description,
   tone = "draft",
   meta,
+  defaultExpanded = false,
 }: DocumentPhaseNoticeProps) {
+  const [isExpanded, setIsExpanded] = useState(defaultExpanded);
+
   return (
     <div
-      className={`mb-3 w-full max-w-full border-l-4 bg-th-paper px-3 py-2 print:hidden ${toneClasses[tone]}`}
+      className={`mb-3 w-full max-w-full border-l-4 bg-th-paper print:hidden ${toneClasses[tone]}`}
     >
-      <p className="text-sm font-semibold uppercase tracking-widest">{label}</p>
-      <p className="text-sm text-th-ink">{description}</p>
-      {meta && <p className="mt-1 text-xs text-th-ink-muted">{meta}</p>}
+      <button
+        type="button"
+        onClick={() => setIsExpanded((v) => !v)}
+        className="flex w-full items-center gap-1.5 px-3 py-2 text-left"
+        aria-expanded={isExpanded}
+      >
+        {isExpanded ? (
+          <ChevronDownIcon className="h-3.5 w-3.5 shrink-0 opacity-60" />
+        ) : (
+          <ChevronRightIcon className="h-3.5 w-3.5 shrink-0 opacity-60" />
+        )}
+        <span className="text-sm font-semibold uppercase tracking-widest">
+          {label}
+        </span>
+      </button>
+
+      {isExpanded && (
+        <div className="px-3 pb-2">
+          <p className="text-sm text-th-ink">{description}</p>
+          {meta && <p className="mt-1 text-xs text-th-ink-muted">{meta}</p>}
+        </div>
+      )}
     </div>
   );
 }

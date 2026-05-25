@@ -2,6 +2,8 @@
 
 import {
   ArrowUpTrayIcon,
+  ChevronDownIcon,
+  ChevronRightIcon,
   ScaleIcon,
   TrashIcon,
 } from "@heroicons/react/16/solid";
@@ -41,6 +43,7 @@ function HomePageContent() {
   const router = useRouter();
   const [selectedTemplate, setSelectedTemplate] = React.useState("empty");
   const [templateName, setTemplateName] = React.useState("");
+  const [isExplainerOpen, setIsExplainerOpen] = React.useState(false);
   const [recentItems, setRecentItems] = React.useState<RecentItemMeta[]>([]);
   const [recentShared, setRecentShared] = React.useState<
     RecentSharedFormMeta[]
@@ -70,34 +73,54 @@ function HomePageContent() {
 
   return (
     <main id="main-content" className="flex w-full flex-col items-center gap-4">
-      <section className="w-full border border-th-line bg-th-paper px-4 py-3 text-left">
-        <h2 className="text-base font-semibold">What Garden Walk helps with</h2>
-        <p className="mt-2 text-sm leading-6 text-th-ink-muted">
-          Garden Walk helps people talk through sensitive topics by turning them
-          into a shared list of prompts. You can set up the questions first,
-          fill them in later, and then review the answers without needing user
-          accounts or server-side access to your plaintext answers.
-        </p>
+      <section className="w-full border border-th-line bg-th-paper text-left">
+        <button
+          type="button"
+          onClick={() => setIsExplainerOpen((v) => !v)}
+          className="flex w-full items-center gap-1.5 px-4 py-3 text-left"
+          aria-expanded={isExplainerOpen}
+        >
+          {isExplainerOpen ? (
+            <ChevronDownIcon className="h-4 w-4 shrink-0 text-th-ink-muted" />
+          ) : (
+            <ChevronRightIcon className="h-4 w-4 shrink-0 text-th-ink-muted" />
+          )}
+          <h2 className="text-base font-semibold">
+            What Garden Walk helps with
+          </h2>
+        </button>
 
-        <div className="mt-3 grid gap-2">
-          <WorkflowStep
-            title="1. Set up the questions"
-            description="Start from scratch or from a built-in starting point. This is where you decide what should be asked."
-          />
-          <WorkflowStep
-            title="2. Fill it out"
-            description="Once the question set looks right, make an answerable copy and mark your responses without changing the structure."
-          />
-          <WorkflowStep
-            title="3. Review or share"
-            description="Look back over the answers yourself or share a read-only version. If you want to revise something later, make a new local copy."
-          />
-        </div>
+        {isExplainerOpen && (
+          <div className="px-4 pb-3">
+            <p className="text-sm leading-6 text-th-ink-muted">
+              Garden Walk helps people talk through sensitive topics by turning
+              them into a shared list of prompts. You can set up the questions
+              first, fill them in later, and then review the answers together —
+              no accounts needed, and your plaintext answers never leave your
+              device.
+            </p>
 
-        <p className="mt-3 border-l-4 border-th-line px-3 py-1 text-sm text-th-ink-muted">
-          Recent work stays in this browser for convenience. If you use
-          encryption, the decryption password stays client-side.
-        </p>
+            <div className="mt-3 grid gap-2">
+              <WorkflowStep
+                title="1. Set up the questions"
+                description="Start from scratch or pick a built-in starting point. Decide what should be asked, then customize if needed."
+              />
+              <WorkflowStep
+                title="2. Fill it out"
+                description="When the question set looks right, fill out a response. The structure stays fixed while you mark your answers."
+              />
+              <WorkflowStep
+                title="3. Review or share"
+                description="Look back over the responses yourself, or share a read-only link. To revise, make a new local copy."
+              />
+            </div>
+
+            <p className="mt-3 border-l-4 border-th-line px-3 py-1 text-sm text-th-ink-muted">
+              Recent work stays in this browser for convenience. Encryption
+              passwords stay client-side and are never sent to the server.
+            </p>
+          </div>
+        )}
       </section>
 
       <Box title="Get Started" onTitleChange={() => {}} buttons={null}>
