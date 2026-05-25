@@ -14,7 +14,7 @@ export default function ThemeSelector() {
 
   return (
     <div
-      className="mb-3 flex items-center justify-center gap-2"
+      className="flex items-center justify-center gap-2"
       role="radiogroup"
       aria-label="Color theme"
     >

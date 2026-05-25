@@ -194,7 +194,6 @@ function SharedTemplatePageContent() {
     <DocumentPageShell
       formName={template.name}
       isEncrypted={isEncrypted}
-      onHomeClick={() => router.push("/")}
       readOnly={true}
       actions={
         <PageActionRails

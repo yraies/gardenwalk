@@ -1,4 +1,4 @@
-import DocumentPhaseNotice from "./DocumentPhaseNotice";
+import DocumentPhaseBadge from "./DocumentPhaseBadge";
 
 type FormPhaseBannerProps = {
   phase: "draft" | "published" | "shared";
@@ -27,6 +27,5 @@ export default function FormPhaseBanner({ phase }: FormPhaseBannerProps) {
   } as const;
 
   const current = config[phase];
-
-  return <DocumentPhaseNotice {...current} />;
+  return <DocumentPhaseBadge {...current} />;
 }

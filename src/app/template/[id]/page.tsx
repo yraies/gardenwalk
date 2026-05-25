@@ -15,7 +15,7 @@ import React from "react";
 import { typeid } from "typeid-js";
 import AnswerSchemaEditor from "../../../components/AnswerSchemaEditor";
 import DocumentPageShell from "../../../components/DocumentPageShell";
-import DocumentPhaseNotice from "../../../components/DocumentPhaseNotice";
+import DocumentPhaseBadge from "../../../components/DocumentPhaseBadge";
 import FormCategoryList from "../../../components/FormCategoryList";
 import LoadingState from "../../../components/LoadingState";
 import PageActionRails, {
@@ -210,7 +210,6 @@ function TemplatePageContent() {
       formName={template.name}
       isEncrypted={isEncrypted}
       onFormNameChange={(name) => setTemplate((prev) => prev.withName(name))}
-      onHomeClick={() => router.push("/")}
       readOnly={isFinalized}
       actions={
         <PageActionRails
@@ -293,7 +292,7 @@ function TemplatePageContent() {
         />
       }
       notice={
-        <DocumentPhaseNotice
+        <DocumentPhaseBadge
           label={isFinalized ? "Finalized Template" : "Template Draft"}
           tone={isFinalized ? "finalized" : "draft"}
           description={

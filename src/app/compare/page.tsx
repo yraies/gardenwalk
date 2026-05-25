@@ -1,11 +1,6 @@
 "use client";
 
-import {
-  HomeIcon,
-  PlusIcon,
-  PrinterIcon,
-  XMarkIcon,
-} from "@heroicons/react/16/solid";
+import { PlusIcon, PrinterIcon, XMarkIcon } from "@heroicons/react/16/solid";
 import dynamic from "next/dynamic";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { Suspense } from "react";
@@ -840,28 +835,8 @@ function ComparePageContent() {
     <>
       {/* Header */}
       <div className="document-sheet relative mb-4">
-        <div className="fixed top-6 left-6 z-10 hidden lg:flex xl:left-10">
-          <EdgeActionButton
-            onClick={() => router.push("/")}
-            label="Home"
-            title="Home"
-            variant="default"
-          >
-            <HomeIcon className="h-5 w-5" />
-          </EdgeActionButton>
-        </div>
-        <button
-          type="button"
-          onClick={() => router.push("/")}
-          className="absolute top-2 left-2 p-1 lg:hidden"
-          title="Home"
-          aria-label="Go home"
-        >
-          <HomeIcon className="h-6 w-6 text-th-ink hover:text-th-ink" />
-        </button>
-
         {comparison && (
-          <div className="fixed top-6 right-6 z-10 hidden lg:flex xl:right-10">
+          <div className="fixed top-20 right-6 z-10 hidden lg:flex xl:right-10">
             <EdgeActionButton
               onClick={printCurrentView}
               label="Print"

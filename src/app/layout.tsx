@@ -1,4 +1,6 @@
+import { HomeIcon } from "@heroicons/react/16/solid";
 import type { Metadata } from "next";
+import Link from "next/link";
 import ThemeSelector from "../components/ThemeSelector";
 import { ThemeProvider } from "../contexts/ThemeContext";
 import "./globals.css";
@@ -30,9 +32,25 @@ export default function RootLayout({
           >
             Skip to main content
           </a>
-          <div className="app-frame overflow-visible">
-            <h1 className="app-brand">Garden Walk</h1>
-            <ThemeSelector />
+          <header className="app-header">
+            <div className="app-header-inner">
+              <div className="flex flex-1 items-center">
+                <Link
+                  href="/"
+                  className="flex items-center gap-1.5 text-th-ink-muted hover:text-th-ink"
+                  aria-label="Go home"
+                  title="Home"
+                >
+                  <HomeIcon className="h-5 w-5" />
+                </Link>
+              </div>
+              <h1 className="app-brand">Garden Walk</h1>
+              <div className="flex flex-1 items-center justify-end">
+                <ThemeSelector />
+              </div>
+            </div>
+          </header>
+          <div className="app-frame">
             <div className="page-shell">{children}</div>
           </div>
         </ThemeProvider>

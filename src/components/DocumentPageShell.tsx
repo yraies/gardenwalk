@@ -4,7 +4,6 @@ import FormHeader from "./FormHeader";
 interface DocumentPageShellProps {
   formName: string;
   isEncrypted: boolean;
-  onHomeClick: () => void;
   readOnly?: boolean;
   onFormNameChange?: (name: string) => void;
   respondentName?: string;
@@ -18,7 +17,6 @@ interface DocumentPageShellProps {
 export default function DocumentPageShell({
   formName,
   isEncrypted,
-  onHomeClick,
   readOnly = false,
   onFormNameChange,
   respondentName,
@@ -34,7 +32,6 @@ export default function DocumentPageShell({
         formName={formName}
         isEncrypted={isEncrypted}
         onFormNameChange={onFormNameChange}
-        onHomeClick={onHomeClick}
         readOnly={readOnly}
         respondentName={respondentName}
         onRespondentNameChange={onRespondentNameChange}

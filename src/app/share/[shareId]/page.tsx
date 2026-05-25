@@ -303,7 +303,6 @@ function SharedFormPageContent() {
       <DocumentPageShell
         formName={formName || "Shared Form"}
         isEncrypted={isFormEncrypted}
-        onHomeClick={() => router.push("/")}
         readOnly={true}
         notice={<FormPhaseBanner phase="shared" />}
         overlay={shareInfo ? <ShareInfoOverlay shareInfo={shareInfo} /> : null}
@@ -338,7 +337,6 @@ function SharedFormPageContent() {
     <DocumentPageShell
       formName={form.templateName || formName}
       isEncrypted={isFormEncrypted}
-      onHomeClick={() => router.push("/")}
       readOnly={true}
       respondentName={
         form.templateName ? (form.respondentName ?? undefined) : undefined

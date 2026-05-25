@@ -273,7 +273,6 @@ function FormPageContent() {
             ? (name) => setForm((prev) => prev.withRespondentName(name))
             : undefined
         }
-        onHomeClick={() => router.push("/")}
         readOnly={isPublished}
         actions={<FormActionButtons />}
         notice={<FormPhaseBanner phase={isPublished ? "published" : "draft"} />}
