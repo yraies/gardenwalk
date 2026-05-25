@@ -222,9 +222,9 @@ function SharedTemplatePageContent() {
               },
               {
                 key: "create-my-form",
-                label: "Create My Form",
+                label: "Fill Out",
                 onClick: startLocalForm,
-                title: "Create a new form from this template",
+                title: "Create a new response from this template",
                 variant: "success",
                 icon: <PlayIcon className="h-5 w-5" />,
               },
@@ -244,7 +244,7 @@ function SharedTemplatePageContent() {
         <DocumentPhaseNotice
           label="Shared Template"
           tone="shared"
-          description="This shared template is read-only. Review the structure, then create your own local form to fill in answers."
+          description="This shared template is read-only. Review the structure, then fill it out yourself."
           meta={viewCount !== null ? `Viewed ${viewCount} times` : undefined}
         />
       }

@@ -235,15 +235,15 @@ const ShareModal: React.FC<ShareModalProps> = ({
         <div className="space-y-5 px-5 py-4">
           <p className="text-sm text-th-ink-muted">
             Shared links are read-only. Anyone opening them will see the same
-            published form results.
+            published response results.
           </p>
 
           <div className="border-l-4 border-th-info bg-th-paper-soft px-3 py-2 text-sm text-th-ink">
             Shared links use the form&apos;s own protection settings.
             <br />
             {requiresPassword || shareInfo?.requiresPassword
-              ? "Recipients will need the same form password."
-              : "This form does not currently require a password."}
+              ? "Recipients will need the same response password."
+              : "This response does not currently require a password."}
           </div>
 
           {shareInfo ? (
@@ -288,7 +288,7 @@ const ShareModal: React.FC<ShareModalProps> = ({
                   className="mb-2 flex items-center gap-2 text-sm font-medium text-th-ink-muted"
                 >
                   <CalendarIcon className="h-4 w-4" aria-hidden="true" />
-                  Auto-delete underlying published form
+                  Auto-delete underlying published response
                 </label>
                 <select
                   id="share-auto-delete"
@@ -320,7 +320,7 @@ const ShareModal: React.FC<ShareModalProps> = ({
               <h3 className="text-base font-semibold">Loading shared view…</h3>
 
               <p className="text-sm text-th-ink-muted">
-                Loading the canonical shared view for this published form.
+                Loading the canonical shared view for this published response.
               </p>
             </div>
           )}

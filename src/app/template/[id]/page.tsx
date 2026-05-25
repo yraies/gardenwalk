@@ -247,9 +247,9 @@ function TemplatePageContent() {
                   },
                   {
                     key: "start-form",
-                    label: "Start Form",
+                    label: "Fill Out",
                     onClick: startForm,
-                    title: "Start Form",
+                    title: "Fill Out",
                     variant: "success",
                     icon: <PlayIcon className="h-5 w-5" />,
                   },
@@ -298,7 +298,7 @@ function TemplatePageContent() {
           tone={isFinalized ? "finalized" : "draft"}
           description={
             isFinalized
-              ? "This template is finalized. Its structure is frozen and ready for creating forms."
+              ? "This template is finalized. Its structure is frozen and ready for creating responses."
               : "Edit the structure here. Templates define categories and questions, but do not contain filled answers."
           }
         />

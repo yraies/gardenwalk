@@ -64,7 +64,7 @@ export default function FormActionButtons() {
       key: "start-fresh",
       label: "Start Fresh",
       onClick: handleStartFresh,
-      title: "Start a new form with fresh answers",
+      title: "Start a new response with fresh answers",
       variant: "success",
       icon: <PlayIcon className="h-5 w-5" />,
     });
@@ -87,7 +87,7 @@ export default function FormActionButtons() {
           )}`,
         );
       },
-      title: "Compare with other forms",
+      title: "Compare with other responses",
       variant: "info",
       icon: <ScaleIcon className="h-5 w-5" />,
     });
@@ -117,7 +117,7 @@ export default function FormActionButtons() {
       key: "delete",
       label: "Delete",
       onClick: handleDelete,
-      title: "Delete Form",
+      title: "Delete Response",
       disabled: isDeleting,
       variant: "danger",
       icon: <TrashIcon className="h-5 w-5" />,
@@ -139,7 +139,7 @@ export default function FormActionButtons() {
       key: "publish",
       label: "Publish",
       onClick: handlePublish,
-      title: "Publish Form",
+      title: "Publish Response",
       disabled: isPublishing,
       variant: "success",
       icon: <CloudArrowUpIcon className="h-5 w-5" />,
@@ -151,7 +151,7 @@ export default function FormActionButtons() {
       key: "share",
       label: "Share",
       onClick: handleShare,
-      title: "Share Form",
+      title: "Share Response",
       variant: "info",
       icon: <ShareIcon className="h-5 w-5" />,
     });

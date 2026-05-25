@@ -359,7 +359,7 @@ function SharedFormPageContent() {
                 key: "start-fresh",
                 label: "Start Fresh",
                 onClick: startFreshForm,
-                title: "Start a new form with fresh answers",
+                title: "Start a new response with fresh answers",
                 variant: "success",
                 icon: <PlayIcon className="h-5 w-5" />,
               },
@@ -378,7 +378,7 @@ function SharedFormPageContent() {
                   router.push(
                     `/compare?forms=${encodeURIComponent(`share:${shareId}`)}`,
                   ),
-                title: "Compare with other forms",
+                title: "Compare with other responses",
                 variant: "info",
                 icon: <ScaleIcon className="h-5 w-5" />,
               },

@@ -6,7 +6,7 @@ interface DeletedFormMessageProps {
 }
 
 export default function DeletedFormMessage({
-  message = "The form you're trying to access has been removed.",
+  message = "The response you're trying to access has been removed.",
   onGoHome,
 }: DeletedFormMessageProps) {
   return (
@@ -16,7 +16,9 @@ export default function DeletedFormMessage({
           className="h-16 w-16 text-th-danger mx-auto mb-4"
           aria-hidden="true"
         />
-        <h1 className="text-2xl font-bold mb-2">This form has been deleted</h1>
+        <h1 className="text-2xl font-bold mb-2">
+          This response has been deleted
+        </h1>
         <p className="text-th-line mb-6">{message}</p>
         <button
           type="button"

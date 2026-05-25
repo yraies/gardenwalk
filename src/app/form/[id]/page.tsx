@@ -146,7 +146,7 @@ function FormPageContent() {
   if (needsPasswordVerification) {
     return (
       <div className="flex w-full flex-col items-center justify-center min-h-screen gap-4">
-        <h1 className="text-2xl font-bold">Password Protected Form</h1>
+        <h1 className="text-2xl font-bold">Password Protected Response</h1>
         <p>This form is encrypted and requires a password to view.</p>
         <PasswordModal
           isOpen={true}

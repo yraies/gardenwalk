@@ -12,6 +12,7 @@ export interface EncryptedData {
   encrypted: string;
   salt: string;
   iv?: string; // Present in new format; absent in legacy data
+  iterations?: number; // Stored for self-describing decryption; absent means use default
 }
 
 export interface PasswordHashResult {
@@ -28,13 +29,14 @@ export interface PasswordHashResult {
 export function encryptFormData(
   data: unknown,
   password: string,
+  iterations = PBKDF2_ITERATIONS,
 ): EncryptedData {
   const salt = CryptoJS.lib.WordArray.random(256 / 8).toString();
   const iv = CryptoJS.lib.WordArray.random(128 / 8);
 
   const key = CryptoJS.PBKDF2(password, salt, {
     keySize: 256 / 32,
-    iterations: PBKDF2_ITERATIONS,
+    iterations,
   });
 
   // Pass key as WordArray + explicit IV so CryptoJS uses the key directly
@@ -46,6 +48,7 @@ export function encryptFormData(
     encrypted: encrypted.toString(),
     salt,
     iv: iv.toString(),
+    iterations,
   };
 }
 
@@ -59,9 +62,9 @@ export function decryptFormData(
   password: string,
 ): unknown {
   try {
-    const iterations = encryptedData.iv
-      ? PBKDF2_ITERATIONS
-      : LEGACY_PBKDF2_ITERATIONS;
+    const iterations =
+      encryptedData.iterations ??
+      (encryptedData.iv ? PBKDF2_ITERATIONS : LEGACY_PBKDF2_ITERATIONS);
     const key = CryptoJS.PBKDF2(password, encryptedData.salt, {
       keySize: 256 / 32,
       iterations,

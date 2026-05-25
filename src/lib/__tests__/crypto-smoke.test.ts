@@ -1,40 +1,66 @@
 import CryptoJS from "crypto-js";
 import {
+  computePasswordHash,
   decryptFormData,
   type EncryptedData,
   encryptFormData,
-  LEGACY_PBKDF2_ITERATIONS,
+  hashPasswordWithSalt,
   PBKDF2_ITERATIONS,
+  validatePassword,
+  verifyPasswordHash,
 } from "../crypto";
 
-describe("crypto smoke", () => {
-  test("uses hardened PBKDF2 iterations for new encryptions", () => {
+// Tiny iteration count so tests run in milliseconds.
+// PBKDF2_ITERATIONS is still asserted to be >= 600_000 below.
+const T = 1;
+
+describe("crypto", () => {
+  test("PBKDF2_ITERATIONS is hardened (>= 600k)", () => {
     expect(PBKDF2_ITERATIONS).toBeGreaterThanOrEqual(600_000);
   });
 
-  test("round-trips one encrypted payload", () => {
+  test("round-trips an encrypted payload", () => {
     const original = { name: "Smoke Test", categories: [] };
-    const encrypted = encryptFormData(original, "smoke-pass-123");
-    const decrypted = decryptFormData(encrypted, "smoke-pass-123");
-
-    expect(decrypted).toEqual(original);
+    const encrypted = encryptFormData(original, "smoke-pass-123", T);
+    expect(decryptFormData(encrypted, "smoke-pass-123")).toEqual(original);
   });
 
-  test("keeps legacy no-iv payloads readable", () => {
+  test("throws on wrong password", () => {
+    const encrypted = encryptFormData({ secret: true }, "correct", T);
+    expect(() => decryptFormData(encrypted, "wrong")).toThrow(
+      "Failed to decrypt form data. Please check your password.",
+    );
+  });
+
+  test("reads legacy no-iv payloads", () => {
     const original = { name: "Legacy", categories: [] };
     const salt = CryptoJS.lib.WordArray.random(256 / 8).toString();
     const key = CryptoJS.PBKDF2("legacy-pass", salt, {
       keySize: 256 / 32,
-      iterations: LEGACY_PBKDF2_ITERATIONS,
+      iterations: T,
     });
     const encrypted = CryptoJS.AES.encrypt(
       JSON.stringify(original),
       key.toString(),
     ).toString();
 
-    const legacyData: EncryptedData = { encrypted, salt };
-    const decrypted = decryptFormData(legacyData, "legacy-pass");
+    // Omit `iv`; pass iterations so decryptFormData uses the right count.
+    const legacyData: EncryptedData = { encrypted, salt, iterations: T };
+    expect(decryptFormData(legacyData, "legacy-pass")).toEqual(original);
+  });
 
-    expect(decrypted).toEqual(original);
+  test("validatePassword accepts any non-empty string", () => {
+    expect(validatePassword("x").isValid).toBe(true);
+    expect(validatePassword("").isValid).toBe(false);
+    expect(validatePassword("").message).toBe("Password cannot be empty");
+  });
+
+  test("hashPasswordWithSalt + computePasswordHash + verifyPasswordHash round-trip", () => {
+    const { hash, salt } = hashPasswordWithSalt("mypassword");
+    const clientHash = computePasswordHash("mypassword", salt);
+    expect(verifyPasswordHash(clientHash, hash)).toBe(true);
+    expect(verifyPasswordHash(computePasswordHash("wrong", salt), hash)).toBe(
+      false,
+    );
   });
 });

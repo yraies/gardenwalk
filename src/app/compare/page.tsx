@@ -155,27 +155,27 @@ async function loadSharedForm(shareId: string): Promise<
   | string
 > {
   const res = await fetch(`/api/share/${shareId}`);
-  if (res.status === 404) return "Shared form not found";
-  if (res.status === 410) return "Shared form is no longer available";
-  if (!res.ok) return "Failed to load shared form";
+  if (res.status === 404) return "Shared response not found";
+  if (res.status === 410) return "Shared response is no longer available";
+  if (!res.ok) return "Failed to load shared response";
   const data = await res.json();
   if (data.requiresPassword) {
     return {
       requiresPassword: true,
       compareIdentity: data.compareIdentity,
-      formName: data.formName ?? "Shared Form",
+      formName: data.formName ?? "Shared Response",
       shareId,
     };
   }
   const formData = data.form;
   if (formData.name === "[Deleted]" || formData.data === "{}") {
-    return "This shared form has been deleted";
+    return "This shared response has been deleted";
   }
   if (formData.encrypted) {
     return {
       requiresPassword: true,
       compareIdentity: data.compareIdentity,
-      formName: formData.name ?? "Shared Form",
+      formName: formData.name ?? "Shared Response",
       shareId,
     };
   }
@@ -642,7 +642,7 @@ function ComparePageContent() {
           });
         });
       } catch {
-        setError(`Failed to load shared form: ${shareId}`);
+        setError(`Failed to load shared response: ${shareId}`);
       } finally {
         setIsLoading(false);
       }
@@ -962,7 +962,7 @@ function ComparePageContent() {
         </div>
       )}
 
-      {/* Password modal for encrypted shared forms */}
+      {/* Password modal for encrypted shared responses */}
       {pendingPassword && (
         <PasswordModal
           isOpen={true}

@@ -100,12 +100,12 @@ function HomePageContent() {
         </p>
       </section>
 
-      <Box title="New Template" onTitleChange={() => {}} buttons={null}>
+      <Box title="Get Started" onTitleChange={() => {}} buttons={null}>
         <div className="grid w-full grid-cols-1 md:grid-cols-2">
           <p className="col-span-full px-2 text-sm text-th-ink-muted">
-            Choose a starting point and an optional title. You can create a
-            template draft to edit the structure, and non-empty starter
-            templates can also open directly as fillable forms.
+            Choose a starting point and an optional title. You can fill it out
+            straight away from any non-empty starter, or customize the question
+            structure first.
           </p>
           <Spacer />
           <div className="col-span-full flex flex-row gap-2 px-2">
@@ -133,19 +133,6 @@ function HomePageContent() {
           )}
           <Spacer />
           <div className="col-span-full flex flex-wrap justify-end gap-2 px-2">
-            <button
-              type="button"
-              className="cursor-pointer border border-th-line bg-th-paper px-3 py-2 text-sm font-semibold text-th-ink-muted hover:backdrop-brightness-95"
-              onClick={() =>
-                createAndNavigateTemplateDraft(
-                  selectedStarterTemplate.template,
-                  templateName,
-                  router,
-                )
-              }
-            >
-              Create Template Draft
-            </button>
             {canFillFormFromStarter && (
               <button
                 type="button"
@@ -158,9 +145,22 @@ function HomePageContent() {
                   )
                 }
               >
-                Fill Form
+                Fill Out
               </button>
             )}
+            <button
+              type="button"
+              className="cursor-pointer border border-th-line bg-th-paper px-3 py-2 text-sm font-semibold text-th-ink-muted hover:backdrop-brightness-95"
+              onClick={() =>
+                createAndNavigateTemplateDraft(
+                  selectedStarterTemplate.template,
+                  templateName,
+                  router,
+                )
+              }
+            >
+              Customize Template
+            </button>
           </div>
         </div>
       </Box>
@@ -241,7 +241,7 @@ function HomePageContent() {
       </Box>
 
       <Box
-        title="Recent Forms"
+        title="Recent Responses"
         onTitleChange={() => {}}
         buttons={
           recentForms.length > 0 ? (
@@ -249,7 +249,7 @@ function HomePageContent() {
               onClick={() =>
                 clearRecentsByKind("form", recentItems, setRecentItems)
               }
-              title="Clear Recent Forms"
+              title="Clear Recent Responses"
             >
               <TrashIcon className="h-4 w-4 transition-transform group-hover:scale-90 group-hover:text-th-danger" />
             </IconButton>
@@ -268,14 +268,14 @@ function HomePageContent() {
             ))
           ) : (
             <p className="place-self-center px-2 py-1 text-center text-sm italic text-th-ink-muted">
-              No recent forms
+              No recent responses
             </p>
           )}
         </div>
       </Box>
 
       <Box
-        title="Recently Viewed Shared Forms"
+        title="Recently Viewed Shared Responses"
         onTitleChange={() => {}}
         buttons={
           recentShared.length > 0 ? (
@@ -284,7 +284,7 @@ function HomePageContent() {
                 clearRecentSharedForms(localStorage);
                 setRecentShared([]);
               }}
-              title="Clear Recently Viewed Shared Forms"
+              title="Clear Recently Viewed Shared Responses"
             >
               <TrashIcon className="h-4 w-4 transition-transform group-hover:scale-90 group-hover:text-th-danger" />
             </IconButton>
@@ -465,7 +465,7 @@ function describeRecentItem(item: RecentItemMeta): string {
     return item.phase === "finalized" ? "finalized template" : "template draft";
   }
 
-  return item.phase === "published" ? "published form" : "form draft";
+  return item.phase === "published" ? "published response" : "response draft";
 }
 
 function createAndNavigateTemplateDraft(

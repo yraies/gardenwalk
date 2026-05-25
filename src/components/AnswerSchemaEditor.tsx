@@ -255,7 +255,7 @@ export default function AnswerSchemaEditor({
     return (
       <div className="document-sheet no-print mb-2 border border-th-line bg-th-paper px-4 py-3 print:hidden">
         <p className="text-sm font-semibold text-th-ink-muted">
-          Answer Options
+          Response Options
         </p>
         <div className="mt-2 flex flex-wrap gap-2">
           {effectiveOptions.map((option, index) => {
@@ -277,7 +277,7 @@ export default function AnswerSchemaEditor({
         </div>
         {isCustom && (
           <p className="mt-1 text-xs text-th-ink-muted">
-            Custom answer options are in use.
+            Custom response options are in use.
           </p>
         )}
       </div>
@@ -292,7 +292,7 @@ export default function AnswerSchemaEditor({
           className="text-sm font-semibold text-th-ink-muted hover:text-th-ink"
           onClick={() => setIsExpanded(!isExpanded)}
         >
-          Answer Options {isCustom ? "(custom)" : "(default)"}{" "}
+          Response Options {isCustom ? "(custom)" : "(default)"}{" "}
           {isExpanded ? "▾" : "▸"}
         </button>
         {!isCustom && !isExpanded && (
@@ -327,7 +327,7 @@ export default function AnswerSchemaEditor({
           {!isCustom && (
             <div className="flex items-center justify-between">
               <p className="text-xs text-th-ink-muted">
-                Currently using the built-in answer options.
+                Currently using the built-in response options.
               </p>
               <button
                 type="button"
@@ -458,7 +458,7 @@ export default function AnswerSchemaEditor({
               onClick={addOption}
             >
               <PlusIcon className="h-3 w-3" aria-hidden="true" />
-              Add answer option
+              Add response option
             </button>
           )}
         </div>
