@@ -20,8 +20,8 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-# Create the data directory for the build phase (Next.js will need it during build)
-RUN mkdir -p /app/data
+# Ensure public/ and data/ exist even when empty (git doesn't track empty dirs)
+RUN mkdir -p /app/public /app/data
 
 ENV DATA_DIR=/app/data
 # Next.js collects completely anonymous telemetry data about general usage.
