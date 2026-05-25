@@ -131,7 +131,9 @@ function CategoryBox({
       role="region"
       aria-label={`${category.name} category`}
     >
-      <ul className="m-0 list-none p-0">{questionBlock}</ul>
+      <ul className="m-0 list-none divide-y divide-th-line/30 p-0">
+        {questionBlock}
+      </ul>
     </Box>
   );
 }

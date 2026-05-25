@@ -20,7 +20,7 @@ export default function DocumentPhaseNotice({
 }: DocumentPhaseNoticeProps) {
   return (
     <div
-      className={`mb-3 w-full max-w-lg border-l-4 bg-th-paper px-3 py-2 print:hidden ${toneClasses[tone]}`}
+      className={`mb-3 w-full max-w-full border-l-4 bg-th-paper px-3 py-2 print:hidden ${toneClasses[tone]}`}
     >
       <p className="text-sm font-semibold uppercase tracking-widest">{label}</p>
       <p className="text-sm text-th-ink">{description}</p>

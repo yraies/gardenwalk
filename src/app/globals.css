@@ -153,16 +153,35 @@ body {
   margin: 0 auto;
   min-height: 100vh;
   width: 100%;
-  max-width: 40rem;
+  max-width: clamp(30rem, 50vw, 38rem);
   padding: 1rem 1rem 2rem;
+}
+
+@media (min-width: 768px) {
+  .app-frame {
+    min-height: auto;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+    padding: 1.5rem 2rem 2.5rem;
+    border: 1px solid var(--th-line);
+    background: var(--th-paper-soft);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  }
 }
 
 .app-brand {
   margin: 1rem 0 0.5rem;
   text-align: center;
-  font-size: 2.25rem;
+  font-size: 1.75rem;
   font-weight: 800;
   color: var(--th-ink);
+}
+
+@media (min-width: 768px) {
+  .app-brand {
+    font-size: 2.25rem;
+    margin: 0.5rem 0 0.5rem;
+  }
 }
 
 .page-shell {
@@ -175,7 +194,7 @@ body {
 
 .document-sheet {
   width: 100%;
-  max-width: 40rem;
+  max-width: 38rem;
 }
 
 .paper-panel {
@@ -185,7 +204,6 @@ body {
 .paper-field {
   min-width: 0;
   border: 0;
-  border-bottom: 1px solid currentColor;
   background: transparent;
   color: inherit;
 }

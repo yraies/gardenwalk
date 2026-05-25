@@ -3,6 +3,7 @@ import {
   ArrowUpIcon,
   TrashIcon,
 } from "@heroicons/react/16/solid";
+import { useCallback, useEffect, useRef } from "react";
 import type {
   AnswerOption,
   Category,
@@ -11,6 +12,40 @@ import type {
 } from "../types/Form";
 import IconButton from "./IconButton";
 import SelectionButton from "./SelectionButton";
+
+/**
+ * A textarea that automatically adjusts its height to fit content.
+ * Starts at 1 row and grows as text wraps.
+ */
+function AutoGrowTextarea({
+  value,
+  className,
+  ...props
+}: React.TextareaHTMLAttributes<HTMLTextAreaElement> & { value: string }) {
+  const ref = useRef<HTMLTextAreaElement>(null);
+
+  const adjustHeight = useCallback(() => {
+    const el = ref.current;
+    if (!el) return;
+    el.style.height = "auto";
+    el.style.height = `${el.scrollHeight}px`;
+  }, []);
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: value is needed to trigger re-measurement when content changes externally
+  useEffect(() => {
+    adjustHeight();
+  }, [value, adjustHeight]);
+
+  return (
+    <textarea
+      ref={ref}
+      className={className}
+      value={value}
+      onInput={adjustHeight}
+      {...props}
+    />
+  );
+}
 
 function QuestionLine({
   question,
@@ -50,10 +85,9 @@ function QuestionLine({
         />
       )}
 
-      {/* Input for screen, span for print (to enable text wrapping) */}
-      <input
-        type="text"
-        className="paper-field question-text screen-only mx-2 min-w-10 grow"
+      {/* Auto-growing textarea for screen (supports text wrapping) */}
+      <AutoGrowTextarea
+        className="paper-field question-text screen-only mx-2 min-w-10 grow resize-none overflow-hidden p-0 leading-snug"
         value={question.value}
         placeholder="Question"
         onChange={(e) => {
@@ -66,6 +100,7 @@ function QuestionLine({
         readOnly={!structureEditable}
         aria-label="Question text"
         name="question-text"
+        rows={1}
       />
 
       {/* Print-only text that can wrap */}
