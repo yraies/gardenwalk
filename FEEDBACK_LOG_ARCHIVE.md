@@ -36,6 +36,16 @@ Required fields for new entries:
 
 ## Entries
 
+### F-030 (2026-05-25) - Mobile users need visible response-option meanings without hover
+
+- **Date**: 2026-05-25
+- **Source**: Stakeholder chat
+- **Exact Quote**: "I noticed that on mobile there is no way to find out what the response options mean, because you can hardly hover over the inputs. We should add a small legend at the top above the first category and below the action buttons"
+- **Normalized Intent**: Response option meanings must be visible in the normal mobile flow without relying on hover/tooltips.
+- **Feedback**: Answerable response views should include a compact screen-visible legend before the first category and after page actions so users can understand the response controls on touch devices.
+- **Action taken**: Added `ResponseOptionsLegend` and render it automatically in `FormCategoryList` whenever answers are visible/editable (`answerMode !== "hidden"`). The legend is screen-visible, print-hidden, shows each response option with its current icon/text styling plus label, and appears above the first category.
+- **Validation**: `npm run build` passed and `npm test -- --forceExit` passed.
+
 ### F-029 (2026-05-25) - Password-protected shared responses must be comparable
 
 - **Date**: 2026-05-25
