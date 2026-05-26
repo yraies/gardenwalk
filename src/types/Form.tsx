@@ -345,6 +345,7 @@ export type FormPOJO = {
   answerOptions?: AnswerOption[];
   templateName?: string;
   respondentName?: string;
+  description?: string;
 };
 
 class Form {
@@ -353,6 +354,7 @@ class Form {
   readonly answerOptions?: AnswerOption[];
   readonly templateName?: string;
   readonly respondentName?: string;
+  readonly description?: string;
 
   private constructor(
     name: string,
@@ -360,20 +362,30 @@ class Form {
     answerOptions?: AnswerOption[],
     templateName?: string,
     respondentName?: string,
+    description?: string,
   ) {
     this.name = name;
     this.categories = categories;
     this.answerOptions = answerOptions;
     this.templateName = templateName;
     this.respondentName = respondentName;
+    this.description = description;
   }
 
   static new(
     name: string,
     categories: Category[],
     answerOptions?: AnswerOption[],
+    description?: string,
   ): Form {
-    return new Form(name, categories, answerOptions);
+    return new Form(
+      name,
+      categories,
+      answerOptions,
+      undefined,
+      undefined,
+      description,
+    );
   }
 
   static fromPOJO(obj: FormPOJO): Form {
@@ -383,6 +395,7 @@ class Form {
       obj.answerOptions,
       obj.templateName,
       obj.respondentName,
+      typeof obj.description === "string" ? obj.description : undefined,
     );
   }
 
@@ -397,6 +410,18 @@ class Form {
       this.answerOptions,
       this.templateName,
       this.respondentName,
+      this.description,
+    );
+  }
+
+  withDescription(description: string): Form {
+    return new Form(
+      this.name,
+      this.categories,
+      this.answerOptions,
+      this.templateName,
+      this.respondentName,
+      description,
     );
   }
 
@@ -407,6 +432,7 @@ class Form {
       this.answerOptions,
       this.templateName,
       this.respondentName,
+      this.description,
     );
   }
 
@@ -417,6 +443,7 @@ class Form {
       answerOptions,
       this.templateName,
       this.respondentName,
+      this.description,
     );
   }
 
@@ -427,6 +454,7 @@ class Form {
       this.answerOptions,
       templateName,
       this.respondentName,
+      this.description,
     );
   }
 
@@ -437,6 +465,7 @@ class Form {
       this.answerOptions,
       this.templateName,
       respondentName,
+      this.description,
     );
   }
 
@@ -453,6 +482,7 @@ class Form {
       this.answerOptions,
       this.templateName,
       this.respondentName,
+      this.description,
     );
   }
 
@@ -474,6 +504,7 @@ class Form {
       this.answerOptions,
       this.templateName,
       this.respondentName,
+      this.description,
     );
   }
 
@@ -484,6 +515,7 @@ class Form {
       this.answerOptions,
       this.templateName,
       this.respondentName,
+      this.description,
     );
   }
 
@@ -494,6 +526,7 @@ class Form {
       this.answerOptions,
       this.templateName,
       this.respondentName,
+      this.description,
     );
   }
 
@@ -505,6 +538,7 @@ class Form {
       this.answerOptions,
       this.templateName,
       this.respondentName,
+      this.description,
     );
   }
 

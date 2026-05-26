@@ -36,6 +36,15 @@ Required fields for new entries:
 
 ## Entries
 
+### F-031 (2026-05-25) - Template descriptions and deployed-data compatibility
+
+- **Date**: 2026-05-25
+- **Source**: Stakeholder chat
+- **Exact Quote**: "I also noticed that all templates would probably benefit of a small description, so we can get users in the right mindset. On that I would also like to know: are we considering backwards compatibility when modifying the types in this repo? The application is now deployed and when we push updates everything should still work."
+- **Normalized Intent**: Templates should have concise user-facing descriptions, and deployed instances require backward-compatible schema/type evolution.
+- **Feedback**: Starter/template UI should help users enter the right mindset before filling or customizing. Because Garden Walk is deployed, persisted database records, local browser data, shared/admin URLs, and exported JSON should keep working across updates; type changes must be additive or accompanied by migration/normalization.
+- **Action taken**: Updated `SPEC.md` and `PRD.md` to replace the prior no-compatibility assumption with deployed-data compatibility expectations. Added `REQ-31` for template descriptions. Implemented optional persisted `description` support on `Form`/`FormPOJO` with backward-compatible loading for older artifacts, built-in starter descriptions, home-page starter descriptions, editable template-draft descriptions, and read-only description display on template/response views. Archived completed backlog item `B-059`.
+
 ### F-030 (2026-05-25) - Mobile users need visible response-option meanings without hover
 
 - **Date**: 2026-05-25

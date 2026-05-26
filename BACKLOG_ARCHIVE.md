@@ -4,6 +4,10 @@ This file stores completed, cancelled, and superseded backlog items.
 
 ## done
 
+### UX and Compatibility Updates (May 2026)
+
+- **B-059** — Template descriptions (REQ-31, F-031). Added optional persisted template/response descriptions with backward-compatible `Form.fromPOJO` handling for older artifacts, built-in starter descriptions, home-page starter description display, editable template-draft descriptions, and read-only description display on template/response views.
+
 ### Phase 6: Security Hardening Pass 2 (Apr 2026)
 
 - **B-050** — Timing-safe password comparison (audit item 9). Password verification routes now use `crypto.timingSafeEqual()`-backed comparison helpers for both salted client-hash verification and legacy plaintext-hash fallback paths.

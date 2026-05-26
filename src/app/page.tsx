@@ -449,7 +449,14 @@ function renderTemplateOption(
           e.target.checked && setSelectedTemplate(e.target.value)
         }
       />
-      <span className="text-lg font-semibold">{template.name}</span>
+      <span className="flex flex-col">
+        <span className="text-lg font-semibold">{template.name}</span>
+        {template.template.description && (
+          <span className="text-sm leading-5 text-th-ink-muted">
+            {template.template.description}
+          </span>
+        )}
+      </span>
     </label>
   );
 }

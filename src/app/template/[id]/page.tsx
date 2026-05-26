@@ -210,6 +210,10 @@ function TemplatePageContent() {
       formName={template.name}
       isEncrypted={isEncrypted}
       onFormNameChange={(name) => setTemplate((prev) => prev.withName(name))}
+      description={template.description}
+      onDescriptionChange={(description) =>
+        setTemplate((prev) => prev.withDescription(description))
+      }
       readOnly={isFinalized}
       actions={
         <PageActionRails

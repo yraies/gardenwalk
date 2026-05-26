@@ -273,6 +273,7 @@ function FormPageContent() {
             ? (name) => setForm((prev) => prev.withRespondentName(name))
             : undefined
         }
+        description={form.description}
         readOnly={isPublished}
         actions={<FormActionButtons />}
         badge={<FormPhaseBanner phase={isPublished ? "published" : "draft"} />}

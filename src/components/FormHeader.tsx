@@ -8,6 +8,8 @@ interface FormHeaderProps {
   readOnly?: boolean;
   respondentName?: string;
   onRespondentNameChange?: (name: string) => void;
+  description?: string;
+  onDescriptionChange?: (description: string) => void;
   badge?: React.ReactNode;
 }
 
@@ -18,6 +20,8 @@ export default function FormHeader({
   readOnly = false,
   respondentName,
   onRespondentNameChange,
+  description,
+  onDescriptionChange,
   badge,
 }: FormHeaderProps) {
   const hasRespondentField =
@@ -57,6 +61,31 @@ export default function FormHeader({
           )}
           <EncryptionStatus isEncrypted={isEncrypted} showText={false} />
         </div>
+
+        {(description || onDescriptionChange) && (
+          <div className="mx-auto mb-4 max-w-full text-center">
+            {onDescriptionChange && !readOnly ? (
+              <>
+                <label htmlFor="document-description" className="sr-only">
+                  Template description
+                </label>
+                <textarea
+                  id="document-description"
+                  className="paper-field min-h-8 w-full resize-none border-b border-th-line text-center text-sm leading-5 text-th-ink-muted focus:outline-none"
+                  value={description ?? ""}
+                  onChange={(e) => onDescriptionChange(e.target.value)}
+                  placeholder="Add a short description to help people get in the right mindset."
+                  name="document-description"
+                  rows={2}
+                />
+              </>
+            ) : (
+              <p className="text-sm leading-5 text-th-ink-muted">
+                {description}
+              </p>
+            )}
+          </div>
+        )}
 
         {/* Respondent name input for forms */}
         {onRespondentNameChange && !readOnly && (

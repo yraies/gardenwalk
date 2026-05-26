@@ -26,9 +26,10 @@ Garden Walk is a privacy-first conversation starter tool for complex personal to
 - Artifact data is encrypted before storage; server should not store plaintext artifact data.
 - No user accounts; access via opaque artifact links and optional passwords.
 - Recent forms are browser-local only; the server does not provide a synced or global recent-forms list.
-- Templates are finalized before forms are created from them; forms hold answers while templates hold structure.
+- Templates are finalized before forms are created from them; forms hold answers while templates hold structure and optional framing descriptions.
 - Single-user form interaction (no real-time collaboration).
 - Self-hosted via Docker/Podman with persistent SQLite storage.
+- Deployed instances and existing artifacts must remain usable across updates; persisted schemas should evolve additively or with migration/normalization paths.
 
 ## Architecture Snapshot
 
@@ -45,7 +46,7 @@ Garden Walk is a privacy-first conversation starter tool for complex personal to
 2. Artifact encryption at rest and unified access-control model — **implemented**.
 3. Shareable template and form links with distinct published/admin vs shared/read-only access paths — **partial**.
 4. Multi-form comparison as a communication aid, without automated agreement scoring — **implemented**.
-5. UI/UX polish, onboarding clarity, and accessibility improvements — **partial**.
+5. UI/UX polish, onboarding clarity, template descriptions, and accessibility improvements — **partial**.
 6. Public template system — **future/optional**.
 
 ## Form Factor
@@ -56,7 +57,8 @@ Garden Walk is a privacy-first conversation starter tool for complex personal to
 ## Delivery Constraints
 
 - Keep it simple: use well-known libraries, no over-engineering.
-- Preserve existing working code; incremental feature addition.
+- Preserve existing working code and existing deployed data; incremental feature addition.
+- Treat persisted database artifacts, local browser drafts/recents, shared/admin URLs, and exported JSON as backward-compatibility surfaces.
 - Privacy first: no server-side decryption.
 
 ## Non-Goals (Current Phase)
@@ -70,7 +72,7 @@ Garden Walk is a privacy-first conversation starter tool for complex personal to
 
 See `SPEC.md` section 3 for detailed acceptance behaviors. Key outcomes:
 
-- Templates are editable structure-only artifacts; forms are fixed-structure answerable artifacts created from finalized templates.
+- Templates are editable structure-only artifacts with optional framing descriptions; forms are fixed-structure answerable artifacts created from finalized templates.
 - Built-in starter templates with valid structure can begin either a local template draft or a local fillable form from the home page; the empty starter stays template-draft-only.
 - Stored artifact data is encrypted before storage; optional password protection may further restrict access.
 - JSON and CSV export are available through user-friendly UI.

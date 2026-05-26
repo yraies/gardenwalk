@@ -65,4 +65,34 @@ describe("template editing model behavior", () => {
       "First",
     ]);
   });
+
+  test("description is optional for backward-compatible imports", () => {
+    const form = Form.fromPOJO({
+      name: "Legacy Template",
+      categories: [
+        {
+          id: { prefix: "category", suffix: "00000000000000000000000000" },
+          name: "Category",
+          questions: [
+            {
+              id: { prefix: "question", suffix: "00000000000000000000000001" },
+              selection: "unset",
+              value: "Question",
+            },
+          ],
+        },
+      ],
+    });
+
+    expect(form.description).toBeUndefined();
+  });
+
+  test("description survives form transformations", () => {
+    const form = Form.new("Template", [], undefined, "A helpful framing note.");
+
+    expect(form.withName("Renamed").description).toBe(
+      "A helpful framing note.",
+    );
+    expect(form.withoutAnswers().description).toBe("A helpful framing note.");
+  });
 });

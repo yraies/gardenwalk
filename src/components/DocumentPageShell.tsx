@@ -8,6 +8,8 @@ interface DocumentPageShellProps {
   onFormNameChange?: (name: string) => void;
   respondentName?: string;
   onRespondentNameChange?: (name: string) => void;
+  description?: string;
+  onDescriptionChange?: (description: string) => void;
   actions?: React.ReactNode;
   badge?: React.ReactNode;
   notice?: React.ReactNode;
@@ -22,6 +24,8 @@ export default function DocumentPageShell({
   onFormNameChange,
   respondentName,
   onRespondentNameChange,
+  description,
+  onDescriptionChange,
   actions,
   badge,
   notice,
@@ -37,6 +41,8 @@ export default function DocumentPageShell({
         readOnly={readOnly}
         respondentName={respondentName}
         onRespondentNameChange={onRespondentNameChange}
+        description={description}
+        onDescriptionChange={onDescriptionChange}
         badge={badge}
       />
 

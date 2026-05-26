@@ -194,6 +194,7 @@ function SharedTemplatePageContent() {
     <DocumentPageShell
       formName={template.name}
       isEncrypted={isEncrypted}
+      description={template.description}
       readOnly={true}
       actions={
         <PageActionRails

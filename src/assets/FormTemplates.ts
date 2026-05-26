@@ -822,32 +822,54 @@ const RelationalDynamicsTemplate = Form.new(
 const Empty = Form.new("New Template", []);
 
 const FormTemplates = [
-  { id: "empty", name: "Empty", template: Empty },
-  { id: "pnp", name: "PnP Preferences", template: PenAndPaperTemplate },
+  {
+    id: "empty",
+    name: "Empty",
+    template: Empty.withDescription(
+      "Start from a blank page and build your own conversation structure.",
+    ),
+  },
+  {
+    id: "pnp",
+    name: "PnP Preferences",
+    template: PenAndPaperTemplate.withDescription(
+      "Compare play preferences, comfort zones, and expectations before a tabletop campaign.",
+    ),
+  },
   {
     id: "attraction_map",
     name: "Attraction Map",
-    template: AttractionMapTemplate,
+    template: AttractionMapTemplate.withDescription(
+      "Untangle the different kinds of attraction you notice so you can reflect with more nuance.",
+    ),
   },
   {
     id: "shared_connection",
     name: "What's Between Us",
-    template: SharedConnectionTemplate,
+    template: SharedConnectionTemplate.withDescription(
+      "Look at the texture of a connection: comfort, care, play, meaning, boundaries, and commitment.",
+    ),
   },
   {
     id: "relational_dynamics",
     name: "How Do I See Us?",
-    template: RelationalDynamicsTemplate,
+    template: RelationalDynamicsTemplate.withDescription(
+      "Explore the roles, dynamics, and patterns that shape how this relationship feels day to day.",
+    ),
   },
   {
     id: "rel_menu",
     name: "Relationship Menu",
-    template: RelationshipMenuLight,
+    template: RelationshipMenuLight.withDescription(
+      "A lighter check-in for naming relationship expectations, priorities, and boundaries.",
+    ),
   },
   {
     id: "rel_menu_adv",
     name: "Relationship Menu (Advanced)",
-    template: RelationshipMenuAdvanced,
+    template: RelationshipMenuAdvanced.withDescription(
+      "A deeper relationship check-in with more detailed prompts across intimacy, logistics, care, autonomy, and future planning.",
+    ),
   },
 ];
 

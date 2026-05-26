@@ -15,7 +15,7 @@ Garden Walk is a privacy-first conversation starter tool for complex personal to
 
 ## Product Stage
 
-Pre-release (~75% complete). No compatibility obligations.
+Deployed pre-release (~75% complete). Compatibility now matters for already-created artifacts and deployed instances.
 
 ## Users
 
@@ -85,9 +85,11 @@ Pre-release (~75% complete). No compatibility obligations.
 - **REQ-28: Multi-Form Comparison View** — Users can compare 2 or more published forms that share the same template structure in a single view, showing responses side by side to help users notice agreement, disagreement, and alignment themselves without automated evaluation. Status: ✅ implemented.
 - **REQ-29: Auto-Delete Published Forms** — Published forms may be configured to auto-delete the underlying artifact after a chosen time. Auto-delete removes both admin and shared access to that form, after which access paths should show a deleted/unavailable state. Status: ✅ implemented.
 - **REQ-30: Create a New Fillable Form from a Readable Artifact** — Users can create a new local fillable form from any readable form or template by reusing its structure and answer schema. The new fillable form starts with fresh answers rather than copying filled answers from the source artifact. Status: ✅ implemented.
+- **REQ-31: Template Descriptions** — Templates support concise descriptions that put users in the right mindset before they customize or fill them. Descriptions are optional persisted artifact fields and older artifacts without descriptions must continue loading. Status: ✅ implemented.
 
 ### 2) Important Constraints
 
+- Backward compatibility: deployed instances and already-created artifacts must keep working across updates. Persisted database records, shared/admin URLs, browser-local drafts/recents, and exported JSON are compatibility surfaces. Schema/type changes must be additive or include migration/normalization paths for older data.
 - Privacy first: all sensitive data encrypted before storage; server should not store plaintext artifact data.
 - No user accounts: access through opaque artifact links and optional passwords only.
 - Finalization before filling: forms are created from finalized templates, not editable template drafts. Built-in starter templates with valid structure count as ready-made starter templates for beginning a fillable form from the home page.
@@ -109,7 +111,7 @@ Pre-release (~75% complete). No compatibility obligations.
 
 - Starting from scratch opens template creation, not form filling.
 - On the home page, non-empty built-in starter templates offer both "Create Template Draft" and "Fill Form" actions; the empty starter remains template-draft-only.
-- Finalizing a template freezes its structure and answer schema for future forms.
+- Finalizing a template freezes its structure, answer schema, and description for future forms.
 - Starting a form from a finalized template produces an independent fillable copy with fixed structure.
 - Sharing a finalized template produces a unique URL; accessing it shows a read-only structure view.
 - Stored forms/templates remain encrypted in the database.
@@ -127,6 +129,7 @@ Pre-release (~75% complete). No compatibility obligations.
 - Clearing browser-local storage may remove draft recovery, but must not make finalized templates, published/admin forms, or shared/read-only artifacts unreadable through their canonical URLs.
 - Browser print produces a readable print-friendly layout.
 - All UI is responsive and functional on mobile viewports.
+- Updates remain backward-compatible with existing stored artifacts, browser-local data, shared/admin URLs, and exported JSON, using additive fields or migration/normalization where schemas evolve.
 
 ## Non-Goals
 
