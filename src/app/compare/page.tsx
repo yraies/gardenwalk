@@ -9,7 +9,7 @@ import EdgeActionButton from "../../components/EdgeActionButton";
 import LoadingState from "../../components/LoadingState";
 import PasswordModal from "../../components/PasswordModal";
 import { useTheme } from "../../contexts/ThemeContext";
-import { decryptFormData } from "../../lib/crypto";
+import { computePasswordHash, decryptFormData } from "../../lib/crypto";
 import {
   type AnswerOption,
   Form,
@@ -94,6 +94,7 @@ type PendingPassword = {
   shareId: string;
   compareIdentity: string;
   formName: string;
+  passwordSalt?: string | null;
   encryptedData?: string;
 };
 
@@ -145,6 +146,7 @@ async function loadSharedForm(shareId: string): Promise<
       requiresPassword: true;
       compareIdentity: string;
       formName: string;
+      passwordSalt?: string | null;
       shareId: string;
     }
   | string
@@ -159,6 +161,7 @@ async function loadSharedForm(shareId: string): Promise<
       requiresPassword: true,
       compareIdentity: data.compareIdentity,
       formName: data.formName ?? "Shared Response",
+      passwordSalt: data.passwordSalt ?? null,
       shareId,
     };
   }
@@ -615,6 +618,7 @@ function ComparePageContent() {
             shareId,
             compareIdentity: result.compareIdentity,
             formName: result.formName,
+            passwordSalt: result.passwordSalt,
           });
           return;
         }
@@ -685,47 +689,66 @@ function ComparePageContent() {
 
   const handlePasswordSubmit = async (password: string) => {
     if (!pendingPassword) return;
-    const { shareId, compareIdentity } = pendingPassword;
+    const { shareId, compareIdentity, passwordSalt } = pendingPassword;
+    setError(null);
 
-    const res = await fetch(`/api/share/${shareId}`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ password }),
-    });
+    try {
+      const body: Record<string, string> = {};
+      if (passwordSalt) {
+        body.passwordHash = computePasswordHash(password, passwordSalt);
+      } else {
+        body.password = password;
+      }
 
-    if (!res.ok) {
-      if (res.status === 401) throw new Error("Invalid password");
-      throw new Error("Failed to verify password");
-    }
-
-    const data = await res.json();
-    let form: Form;
-
-    if (data.form.encrypted) {
-      const encryptedData = JSON.parse(data.form.data);
-      const decryptedData = decryptFormData(encryptedData, password);
-      form = Form.fromPOJO(decryptedData as FormPOJO);
-    } else {
-      const parsedData = JSON.parse(data.form.data);
-      form = Form.fromPOJO(parsedData as FormPOJO);
-    }
-
-    if (loadedForms.some((f) => f.compareIdentity === compareIdentity)) {
-      setError("This form is already in the comparison");
-      setPendingPassword(null);
-      return;
-    }
-    setLoadedForms((prev) => {
-      return upsertLoadedForm(prev, {
-        id: shareId,
-        compareIdentity,
-        label: getFormLabel(form, data.form.name),
-        templateName: form.templateName,
-        form,
-        source: "share",
+      const res = await fetch(`/api/share/${shareId}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
       });
-    });
-    setPendingPassword(null);
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => null);
+        setError(
+          res.status === 401
+            ? "Invalid password"
+            : (data?.error ?? "Failed to verify password"),
+        );
+        return;
+      }
+
+      const data = await res.json();
+      let form: Form;
+
+      if (data.form.encrypted) {
+        const encryptedData = JSON.parse(data.form.data);
+        const decryptedData = decryptFormData(encryptedData, password);
+        form = Form.fromPOJO(decryptedData as FormPOJO);
+      } else {
+        const parsedData = JSON.parse(data.form.data);
+        form = Form.fromPOJO(parsedData as FormPOJO);
+      }
+
+      if (loadedForms.some((f) => f.compareIdentity === compareIdentity)) {
+        setError("This form is already in the comparison");
+        setPendingPassword(null);
+        return;
+      }
+      setLoadedForms((prev) => {
+        return upsertLoadedForm(prev, {
+          id: shareId,
+          compareIdentity,
+          label: getFormLabel(form, data.form.name),
+          templateName: form.templateName,
+          form,
+          source: "share",
+        });
+      });
+      setPendingPassword(null);
+    } catch (error) {
+      setError(
+        error instanceof Error ? error.message : "Failed to verify password",
+      );
+    }
   };
 
   const removeForm = (index: number) => {
