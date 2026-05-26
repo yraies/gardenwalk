@@ -36,6 +36,16 @@ Required fields for new entries:
 
 ## Entries
 
+### F-029 (2026-05-25) - Password-protected shared responses must be comparable
+
+- **Date**: 2026-05-25
+- **Source**: Stakeholder chat
+- **Exact Quote**: "another issue: when having a password protected form I can not seem to compare it! when i select it from the compare screen and try to input my password, I just get \"Uncaught (in promise) Error: Failed to verify password\" in the console. I am not sure if the password is the issue or whether the compare feature in general is broken."
+- **Normalized Intent**: Password-protected responses should participate in comparison after the user enters the correct password; failed verification should surface as normal UI feedback rather than uncaught promise errors.
+- **Feedback**: Comparing password-protected shared responses is part of the expected comparison workflow. The compare screen must use the same password verification model as the shared response view and should not break with console-only errors.
+- **Action taken**: Updated the compare page to carry `passwordSalt` from the shared-response lookup, submit a client-side `passwordHash` for salted password-protected artifacts, retain raw-password submission only for legacy unsalted artifacts, and catch verification/decryption failures inside the submit handler.
+- **Validation**: `npm run build` passed and `npm test -- --forceExit` passed.
+
 ### F-028 (2026-04-28) - Provide a proper Quadlet for local HTTP behind Caddy
 
 - **Date**: 2026-04-28
