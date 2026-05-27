@@ -36,6 +36,16 @@ Required fields for new entries:
 
 ## Entries
 
+### F-033 (2026-05-25) - Default template descriptions should live with template definitions
+
+- **Date**: 2026-05-25
+- **Source**: Stakeholder chat
+- **Exact Quote**: "I was kind of confused, because I wanted to modify the descriptions of default templates, and didn't find descriptions with the general form creation"
+- **Normalized Intent**: Default template descriptions should be colocated with the default template `Form.new(...)` definitions so they are discoverable and maintainable.
+- **Feedback**: The implementation should avoid separating default template descriptions from the template structures they describe.
+- **Action taken**: Moved built-in template descriptions from the exported `FormTemplates` catalogue list into the corresponding `Form.new(...)` calls, keeping each starter's name, structure, answer options, and description together.
+- **Validation**: `npm run build` passed and `npm test -- --forceExit` passed.
+
 ### F-032 (2026-05-25) - Recent and compare views should show response source templates
 
 - **Date**: 2026-05-25
