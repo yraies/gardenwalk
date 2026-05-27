@@ -36,6 +36,16 @@ Required fields for new entries:
 
 ## Entries
 
+### F-032 (2026-05-25) - Recent and compare views should show response source templates
+
+- **Date**: 2026-05-25
+- **Source**: Stakeholder chat
+- **Exact Quote**: "I noticed that both in the \"recent\" view and the \"compare\" view we only see the name users put it, but not the name of the temlpate. that makes it pretty confusing if you fill in more than one form!"
+- **Normalized Intent**: Response lists and comparison UI should show both the user/response label and the source template name where available.
+- **Feedback**: When a user fills out responses from multiple templates, showing only the respondent/name is ambiguous. Recent response lists and compare views need visible template context.
+- **Action taken**: Updated local recent response rows to show `templateName` as a secondary line. Updated compare loaded-response chips and comparison table column headers to show the primary response label plus source template name where known. Added a SPEC acceptance note.
+- **Validation**: `npm run build` passed and `npm test -- --forceExit` passed.
+
 ### F-031 (2026-05-25) - Template descriptions and deployed-data compatibility
 
 - **Date**: 2026-05-25

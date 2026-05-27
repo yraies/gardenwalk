@@ -41,14 +41,13 @@ import {
 
 // ── Types ──
 
-/** Derives a display label for a form in comparison columns. */
-function getFormLabel(form: Form, fallbackName: string): string {
-  return (
-    form.respondentName?.trim() ||
-    fallbackName ||
-    form.templateName ||
-    form.name
-  );
+/** Derives the primary display label for a response in comparison columns. */
+function getResponsePrimaryLabel(form: Form, fallbackName: string): string {
+  return form.respondentName?.trim() || fallbackName || form.name;
+}
+
+function getResponseTemplateLabel(form: Form): string | undefined {
+  return form.templateName?.trim() || undefined;
 }
 
 function getSuggestionPrimaryLabel(
@@ -241,12 +240,23 @@ function SelectionCell({
   );
 }
 
+type ComparisonColumnDisplay = {
+  primary: string;
+  secondary?: string;
+};
+
+function getColumnTitle(column: ComparisonColumnDisplay): string {
+  return column.secondary
+    ? `${column.primary} — ${column.secondary}`
+    : column.primary;
+}
+
 function ComparisonTable({
   result,
-  labels,
+  columns,
 }: {
   result: ComparisonResult;
-  labels: string[];
+  columns: ComparisonColumnDisplay[];
 }) {
   return (
     <div className="document-sheet flex flex-col gap-3">
@@ -265,13 +275,18 @@ function ComparisonTable({
             {/* Header row */}
             <div className="flex items-center gap-2 border-b border-th-line px-2 py-1.5 text-xs font-semibold text-th-ink-muted">
               <span className="min-w-0 flex-1">Question</span>
-              {labels.map((label) => (
+              {columns.map((column, index) => (
                 <span
-                  key={label}
-                  className="w-20 shrink-0 text-center"
-                  title={label}
+                  key={getColumnTitle(column)}
+                  className="flex w-24 shrink-0 flex-col text-center leading-tight"
+                  title={getColumnTitle(column)}
                 >
-                  {label.length > 10 ? `${label.slice(0, 9)}...` : label}
+                  <span className="truncate">{column.primary}</span>
+                  {column.secondary && (
+                    <span className="truncate text-[10px] font-normal text-th-ink-muted">
+                      {column.secondary}
+                    </span>
+                  )}
                 </span>
               ))}
             </div>
@@ -287,8 +302,8 @@ function ComparisonTable({
                   </span>
                   {row.selections.map((sel, i) => (
                     <span
-                      key={labels[i]}
-                      className="flex w-20 shrink-0 justify-center"
+                      key={getColumnTitle(columns[i])}
+                      className="flex w-24 shrink-0 justify-center"
                     >
                       <SelectionCell
                         selectionKey={sel}
@@ -578,8 +593,8 @@ function ComparePageContent() {
           return upsertLoadedForm(prev, {
             id: formId,
             compareIdentity: result.compareIdentity,
-            label: getFormLabel(result.form, result.name),
-            templateName: result.form.templateName,
+            label: getResponsePrimaryLabel(result.form, result.name),
+            templateName: getResponseTemplateLabel(result.form),
             form: result.form,
             source: "local",
           });
@@ -634,8 +649,8 @@ function ComparePageContent() {
           return upsertLoadedForm(prev, {
             id: shareId,
             compareIdentity: result.compareIdentity,
-            label: getFormLabel(result.form, result.name),
-            templateName: result.form.templateName,
+            label: getResponsePrimaryLabel(result.form, result.name),
+            templateName: getResponseTemplateLabel(result.form),
             form: result.form,
             source: "share",
           });
@@ -737,8 +752,8 @@ function ComparePageContent() {
         return upsertLoadedForm(prev, {
           id: shareId,
           compareIdentity,
-          label: getFormLabel(form, data.form.name),
-          templateName: form.templateName,
+          label: getResponsePrimaryLabel(form, data.form.name),
+          templateName: getResponseTemplateLabel(form),
           form,
           source: "share",
         });
@@ -829,15 +844,30 @@ function ComparePageContent() {
     });
   }, [loadedForms]);
 
+  const displayColumns: ComparisonColumnDisplay[] = React.useMemo(
+    () =>
+      loadedForms.map((form, index) => {
+        const templateName = form.templateName?.trim();
+        return {
+          primary: displayLabels[index],
+          secondary:
+            templateName && templateName !== displayLabels[index]
+              ? templateName
+              : undefined,
+        };
+      }),
+    [loadedForms, displayLabels],
+  );
+
   // Build comparison when 2+ forms loaded
   const comparison: ComparisonResult | null = React.useMemo(() => {
     if (loadedForms.length < 2) return null;
     const entries: ComparisonEntry[] = loadedForms.map((f, i) => ({
-      label: displayLabels[i],
+      label: displayColumns[i].primary,
       form: f.form,
     }));
     return buildComparison(entries);
-  }, [loadedForms, displayLabels]);
+  }, [loadedForms, displayColumns]);
 
   // Compute active fingerprint from the first loaded form for filtering suggestions
   const activeFingerprint = React.useMemo(() => {
@@ -913,13 +943,20 @@ function ComparePageContent() {
                 key={f.id}
                 className="inline-flex items-center gap-1 border border-th-line bg-th-paper px-2 py-1 text-sm"
               >
-                {displayLabels[i]}
+                <span className="flex flex-col leading-tight">
+                  <span>{displayColumns[i].primary}</span>
+                  {displayColumns[i].secondary && (
+                    <span className="text-[11px] font-normal text-th-ink-muted">
+                      {displayColumns[i].secondary}
+                    </span>
+                  )}
+                </span>
                 <button
                   type="button"
                   onClick={() => removeForm(i)}
                   className="ml-1 text-th-danger hover:text-th-danger"
-                  title={`Remove ${displayLabels[i]}`}
-                  aria-label={`Remove ${displayLabels[i]} from comparison`}
+                  title={`Remove ${getColumnTitle(displayColumns[i])}`}
+                  aria-label={`Remove ${getColumnTitle(displayColumns[i])} from comparison`}
                 >
                   <XMarkIcon className="h-3 w-3" />
                 </button>
@@ -1005,7 +1042,7 @@ function ComparePageContent() {
 
       {/* Comparison table */}
       {comparison?.isCompatible && (
-        <ComparisonTable result={comparison} labels={displayLabels} />
+        <ComparisonTable result={comparison} columns={displayColumns} />
       )}
     </>
   );

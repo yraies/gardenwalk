@@ -125,7 +125,7 @@ Deployed pre-release (~75% complete). Compatibility now matters for already-crea
 - Importing a previously exported JSON file creates a new local draft with a fresh ID, not a restoration of the original artifact.
 - Creating a derived template from a readable form or template creates a new local template draft from that artifact's structure.
 - Creating a new fillable form from a readable form or template creates a new local fillable copy with fresh answers and the source artifact's fixed structure.
-- Comparing 2 or more published forms with the same template structure shows each form's answers side by side so users can interpret agreement, disagreement, and alignment themselves.
+- Comparing 2 or more published forms with the same template structure shows each form's answers side by side so users can interpret agreement, disagreement, and alignment themselves. Compare and recent-response views show the source template name where known so multiple responses from different templates are distinguishable.
 - Clearing browser-local storage may remove draft recovery, but must not make finalized templates, published/admin forms, or shared/read-only artifacts unreadable through their canonical URLs.
 - Browser print produces a readable print-friendly layout.
 - All UI is responsive and functional on mobile viewports.

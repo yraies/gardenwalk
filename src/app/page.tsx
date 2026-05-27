@@ -365,11 +365,21 @@ function RecentLocalItem({
         className="flex grow cursor-pointer flex-row items-center px-2 py-1 text-center hover:backdrop-brightness-90"
         onClick={onNavigate}
       >
-        <span className="grow font-semibold" title={item.date.toLocaleString()}>
-          {item.respondentName || item.name}{" "}
-          <span className="text-xs text-th-ink-muted">
-            ({describeRecentItem(item)} - {formatRelativeTime(item.date)})
+        <span
+          className="flex grow flex-col font-semibold"
+          title={item.date.toLocaleString()}
+        >
+          <span>
+            {item.respondentName || item.name}{" "}
+            <span className="text-xs text-th-ink-muted">
+              ({describeRecentItem(item)} - {formatRelativeTime(item.date)})
+            </span>
           </span>
+          {item.kind === "form" && item.templateName && (
+            <span className="text-xs font-normal text-th-ink-muted">
+              {item.templateName}
+            </span>
+          )}
         </span>
         <EncryptionStatus isEncrypted={item.encrypted} />
       </button>
