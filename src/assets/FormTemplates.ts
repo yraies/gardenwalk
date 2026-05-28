@@ -537,7 +537,7 @@ const AttractionMapTemplate = Form.new(
   AttractionMapAnswerOptions,
   "Reflect on the kinds of attraction, closeness, or interest you may feel toward another person."
 );
-/*
+
 // Template 6: What's Between Us — observational exploration of shared connection
 const ids6 = stableIds(6);
 const SharedConnectionAnswerOptions: AnswerOption[] = [
@@ -590,14 +590,14 @@ const SharedConnectionAnswerOptions: AnswerOption[] = [
   },
 ];
 const SharedConnectionTemplate = Form.new(
-  "What's Between Us",
+  "Connection Fit",
   [
     ids6.c("Shared Attention", [
       ids6.q(
-        "We tend to notice the same things \u2014 a detail, a moment, something worth pausing for.",
+        "We tend to notice the same things - a detail, a moment, something worth pausing for.",
       ),
       ids6.q(
-        "When I show them something I find interesting, they actually engage with it.",
+        "When I show them something I find interesting, they usually engage with it.",
       ),
       ids6.q(
         "We get absorbed in the same thing at the same time, without needing to explain why it matters.",
@@ -613,17 +613,17 @@ const SharedConnectionTemplate = Form.new(
       ),
       ids6.q("I feel at ease in their presence, even on a bad day."),
       ids6.q(
-        "They seem to know my rhythms \u2014 when I need space, when I need company \u2014 without me having to explain.",
+        "Without detailed exchanges, they seem to know my rhythms - when I need space, when I need company.",
       ),
       ids6.q("Being together feels like resting, not like effort."),
     ]),
 
     ids6.c("Shared Growth", [
       ids6.q(
-        "I learn things from them that I would not easily learn on my own.",
+        "I learn or discover things through them that I would not easily learn or discover on my own.",
       ),
       ids6.q(
-        "We challenge each other's assumptions without it feeling like a threat.",
+        "When we challenge each other's assumptions, it does not feel like a threat.",
       ),
       ids6.q("Knowing them is making me a better version of myself."),
       ids6.q("We are both changing because of this connection."),
@@ -634,7 +634,7 @@ const SharedConnectionTemplate = Form.new(
         "I can be silly or spontaneous with them without worrying about how I come across.",
       ),
       ids6.q(
-        "We try new things together \u2014 places, activities, experiences \u2014 just to see what happens.",
+        "We try new things together - places, activities, experiences - just to see what happens.",
       ),
       ids6.q(
         "We have inside jokes, shared references, or ways of being together that feel uniquely ours.",
@@ -644,7 +644,7 @@ const SharedConnectionTemplate = Form.new(
 
     ids6.c("Shared Meaning", [
       ids6.q(
-        "We talk about things that actually matter \u2014 values, purpose, direction.",
+        "We talk about things that touch our identity, values, purpose, or direction.",
       ),
       ids6.q(
         "We are building something together that reflects what we both care about.",
@@ -659,7 +659,7 @@ const SharedConnectionTemplate = Form.new(
 
     ids6.c("Shared Care", [
       ids6.q(
-        "I look out for them in practical ways \u2014 checking in, helping out, being reliable.",
+        "I aim to look out for them in practical ways - checking in, helping out, being reliable.",
       ),
       ids6.q("They look out for me in the same way."),
       ids6.q(
@@ -670,12 +670,12 @@ const SharedConnectionTemplate = Form.new(
 
     ids6.c("Shared Identity", [
       ids6.q(
-        '"We" feels like a thing \u2014 not just two individuals who happen to spend time together.',
+        '"We" does not just feel like two individuals who happen to spend time together, but its own thing.',
       ),
       ids6.q("Others associate us with each other in some way."),
       ids6.q("What we have feels distinct from my other relationships."),
       ids6.q(
-        "We represent each other in some way \u2014 speak for, advocate for, or stand with each other.",
+        "We represent each other in some way - speak for, advocate for, or stand with each other.",
       ),
     ]),
 
@@ -694,10 +694,10 @@ const SharedConnectionTemplate = Form.new(
 
     ids6.c("Shared Boundaries", [
       ids6.q(
-        "We have an understanding \u2014 spoken or unspoken \u2014 about what we can count on from each other.",
+        "We have an understanding about what we can count on from each other.",
       ),
       ids6.q(
-        "There are things that feel exclusive or protected about this connection, even if we have never named them.",
+        "There are things that feel exclusive or protected about this connection.",
       ),
       ids6.q(
         "We have discussed, or would be willing to discuss, what this relationship is and is not.",
@@ -708,9 +708,10 @@ const SharedConnectionTemplate = Form.new(
     ]),
   ],
   SharedConnectionAnswerOptions,
-  "Look at the texture of a connection: comfort, care, play, meaning, boundaries, and commitment.",
+  "Look at what you enjoy int your connection: attention, comfort, growth, play, meaning, care, identity, commitment and boundaries.",
 );
 
+/*
 // Template 7: How Do I See Us — relational role/dynamic exploration
 const ids7 = stableIds(7);
 const RelationalDynamicsTemplate = Form.new(
@@ -880,11 +881,11 @@ const FormTemplates = [
     name: "Attraction Map",
     template: AttractionMapTemplate,
   },
-//  {
-//    id: "shared_connection",
-//    name: "What's Between Us",
-//    template: SharedConnectionTemplate,
-//  },
+  {
+    id: "shared_connection",
+    name: "Connection Fit",
+    template: SharedConnectionTemplate,
+  },
 //  {
 //    id: "relational_dynamics",
 //    name: "How Do I See Us?",
