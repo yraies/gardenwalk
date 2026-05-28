@@ -376,7 +376,7 @@ const AttractionMapTemplate = Form.new(
         "I notice how they look, move, dress, gesture, or express themselves more than I usually notice other people.",
       ),
       ids5.q(
-        "I enjoy being visually aware of them, even when we are not interacting much.",
+        "I enjoy having them in my sights, even when we are not interacting much.",
       ),
       ids5.q(
         "Ordinary moments with them can feel visually striking, graceful, charming, or beautiful.",
@@ -385,7 +385,7 @@ const AttractionMapTemplate = Form.new(
         "Something about their visual presence keeps catching my attention again and again.",
       ),
       ids5.q(
-        "I find myself wanting to look again, linger visually, or take in small details about them.",
+        "I find myself wanting to look again, linger, or take in small details about them.",
       ),
     ]),
 
@@ -397,31 +397,32 @@ const AttractionMapTemplate = Form.new(
         "I feel drawn to small forms of affectionate contact with them, such as a hug, leaning, or casual touch.",
       ),
       ids5.q(
-        "I imagine gentle physical closeness with them without needing it to become sexual.",
+        "I imagine gentle physical closeness with them to be calming and comforting.",
       ),
       ids5.q(
         "Their nearness feels physically pleasant in a way I notice.",
       ),
       ids5.q(
-        "I crave (non-sexual) closeness with them in a way that feels comforting, affectionate, or physically meaningful.",
+        "I crave (non-sexual) closeness with them in a way that feels comforting and affectionate.",
       ),
     ]),
 
     ids5.c("Sexual", [
       ids5.q(
-        "I notice moments where their presence, body, voice, or closeness feels sexually charged to me.",
+        "I notice moments where their presence, body, voice, or closeness sparks sexual thoughts in me.",
       ),
       ids5.q(
         "I sometimes imagine what sexual chemistry with them might feel like.",
       ),
-      ids5.q(
-        "Physical closeness with them can make me aware of sexual possibility.",
-      ),
+
       ids5.q(
         "I feel a bodily pull toward sexual contact with them, even if I would not necessarily act on it.",
       ),
       ids5.q(
-        "I can imagine experimenting with engaging in sexual closeness with them in a clear, mutual, and welcome way.",
+        "I enjoy thinking about various sexual scenarios we could find ourselves in.",
+      ),
+      ids5.q(
+        "I can imagine experimenting with or engaging in sexual closeness with them in a clear, mutual, and welcome way.",
       ),
     ]),
 
@@ -430,7 +431,7 @@ const AttractionMapTemplate = Form.new(
         "I feel curious about what they feel, what matters to them, and what they carry inside.",
       ),
       ids5.q(
-        "I want to tell them things that feel personal, vulnerable, or emotionally meaningful.",
+        "I want to tell them things that feel personal, vulnerable, or make me emotional.",
       ),
       ids5.q(
         "When something important happens, I notice an impulse to share it with them.",
