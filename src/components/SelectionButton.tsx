@@ -10,7 +10,7 @@ import {
 } from "@heroicons/react/16/solid";
 import dynamic from "next/dynamic";
 import type React from "react";
-import { useTheme } from "../contexts/ThemeContext";
+import { type AnswerSemantic, useTheme } from "../contexts/ThemeContext";
 import {
   type AnswerOption,
   getEffectiveAnswerOptions,
@@ -145,7 +145,7 @@ export const AVAILABLE_ICONS: {
 ];
 
 /** Icon registry keyed by icon identifier string. */
-const ICON_MAP: Record<string, IconComponent> = Object.fromEntries(
+export const ICON_MAP: Record<string, IconComponent> = Object.fromEntries(
   AVAILABLE_ICONS.map((i) => [i.key, i.Icon]),
 );
 
@@ -153,7 +153,7 @@ const ICON_MAP: Record<string, IconComponent> = Object.fromEntries(
  * Legacy lookup: maps old built-in answer keys to icon identifiers
  * for backward compatibility with data that lacks an explicit `icon` field.
  */
-const LEGACY_KEY_TO_ICON: Record<string, string> = {
+export const LEGACY_KEY_TO_ICON: Record<string, string> = {
   must: "exclamation",
   like: "check",
   open: "thumbsup",
@@ -175,6 +175,28 @@ function getIconForOption(option: AnswerOption): IconComponent {
     return ICON_MAP[legacyIcon];
   }
   return EmptyCircleIcon;
+}
+
+/**
+ * Resolves the display colors for an answer option given a theme chip-color
+ * resolver.
+ */
+export function resolveOptionColors(
+  option: AnswerOption,
+  isUnset: boolean,
+  getChipColor: (semantic: AnswerSemantic | undefined) => {
+    bg: string;
+    text: string;
+  },
+): { bgColor: string; textColor: string } {
+  const chipColor = option.semantic
+    ? getChipColor(option.semantic)
+    : isUnset
+      ? getChipColor(undefined)
+      : null;
+  const bgColor = chipColor ? chipColor.bg : option.color;
+  const textColor = chipColor ? chipColor.text : "#ffffff";
+  return { bgColor, textColor };
 }
 
 interface SelectionButtonProps {
@@ -205,13 +227,11 @@ const SelectionButtonComponent: React.FC<SelectionButtonProps> = ({
 
   // Resolve colors: prefer theme-derived semantic colors, fall back to raw option.color
   const isUnset = selection === unsetKey;
-  const chipColor = option.semantic
-    ? getChipColor(option.semantic)
-    : isUnset
-      ? getChipColor(undefined)
-      : null;
-  const bgColor = chipColor ? chipColor.bg : option.color;
-  const textColor = chipColor ? chipColor.text : "#ffffff";
+  const { bgColor, textColor } = resolveOptionColors(
+    option,
+    isUnset,
+    getChipColor,
+  );
 
   // Icon button rendering
   if (displayMode === "icon") {

@@ -7,20 +7,11 @@ import {
   getOptionDisplay,
   getUnsetKey,
 } from "../types/Form";
-import { AVAILABLE_ICONS } from "./SelectionButton";
-
-const ICON_MAP = Object.fromEntries(
-  AVAILABLE_ICONS.map(({ key, Icon }) => [key, Icon]),
-);
-
-const LEGACY_KEY_TO_ICON: Record<string, string> = {
-  must: "exclamation",
-  like: "check",
-  open: "thumbsup",
-  maybe: "question",
-  off_limits: "minus",
-  unset: "empty",
-};
+import {
+  ICON_MAP,
+  LEGACY_KEY_TO_ICON,
+  resolveOptionColors,
+} from "./SelectionButton";
 
 interface ResponseOptionsLegendProps {
   answerOptions?: AnswerOption[];
@@ -59,13 +50,12 @@ export default function ResponseOptionsLegend({
   ) => (
     <ul className="flex flex-wrap gap-x-3 gap-y-1.5">
       {list.map((option) => {
-        const chipColor = option.semantic
-          ? getChipColor(option.semantic)
-          : option.key === listUnsetKey
-            ? getChipColor(undefined)
-            : null;
-        const bgColor = chipColor ? chipColor.bg : option.color;
-        const textColor = chipColor ? chipColor.text : "#ffffff";
+        const isUnset = option.key === listUnsetKey;
+        const { bgColor, textColor } = resolveOptionColors(
+          option,
+          isUnset,
+          getChipColor,
+        );
         const iconKey =
           option.icon ?? LEGACY_KEY_TO_ICON[option.key] ?? "empty";
         const Icon = ICON_MAP[iconKey] ?? ICON_MAP.empty;

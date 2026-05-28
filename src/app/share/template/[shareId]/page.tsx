@@ -250,7 +250,10 @@ function SharedTemplatePageContent() {
         />
       }
     >
-      <PrintAnswerLegend answerOptions={template.answerOptions} />
+      <PrintAnswerLegend
+        answerOptions={template.answerOptions}
+        secondaryOptions={template.secondaryOptions}
+      />
 
       <ResponseOptionsLegend
         answerOptions={template.answerOptions}

@@ -420,7 +420,12 @@ function SharedFormPageContent() {
       badge={<FormPhaseBanner phase="shared" />}
       overlay={shareInfo ? <ShareInfoOverlay shareInfo={shareInfo} /> : null}
     >
-      <PrintAnswerLegend answerOptions={form.answerOptions} />
+      <PrintAnswerLegend
+        answerOptions={form.answerOptions}
+        secondaryOptions={
+          formHasSecondaryAnswers(form) ? form.secondaryOptions : undefined
+        }
+      />
 
       <FormCategoryList
         categories={form.categories}

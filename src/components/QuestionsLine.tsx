@@ -4,12 +4,7 @@ import {
   TrashIcon,
 } from "@heroicons/react/16/solid";
 import { useCallback, useEffect, useRef } from "react";
-import type {
-  AnswerOption,
-  Category,
-  CategoryID,
-  Question,
-} from "../types/Form";
+import type { AnswerOption, Category, Question } from "../types/Form";
 import { getOptionDisplay } from "../types/Form";
 import IconButton from "./IconButton";
 import SelectionButton from "./SelectionButton";
@@ -69,7 +64,6 @@ function QuestionLine({
   secondaryInputEnabled,
 }: {
   question: Question;
-  categoryID: CategoryID;
   onChange: (mapper: (category: Category) => Category) => void;
   answerMode: "hidden" | "editable" | "readonly";
   structureEditable: boolean;

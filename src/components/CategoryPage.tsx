@@ -33,7 +33,6 @@ function CategoryBox({
   const questionBlock = category.questions.map((question) => (
     <QuestionLine
       question={question}
-      categoryID={category.id}
       key={question.id.toString()}
       onChange={(categoryMapper) =>
         setDocument?.((prev) => {

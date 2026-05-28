@@ -41,7 +41,6 @@ function FormPageContent() {
   const [showShareModal, setShowShareModal] = React.useState(false);
   const [isPublished, setIsPublished] = React.useState(false);
   const [isEncrypted, setIsEncrypted] = React.useState(false);
-  const [_isPublishing, setIsPublishing] = React.useState(false);
   const [needsPasswordVerification, setNeedsPasswordVerification] =
     React.useState(false);
   const [passwordSalt, setPasswordSalt] = React.useState<string | null>(null);
@@ -182,8 +181,6 @@ function FormPageContent() {
   ) => {
     if (!form || !formId) return;
 
-    setIsPublishing(true);
-
     try {
       let formData = form;
       let encrypted = false;
@@ -247,8 +244,6 @@ function FormPageContent() {
     } catch (error) {
       console.error("Error publishing form:", error);
       alert("An error occurred while publishing the form.");
-    } finally {
-      setIsPublishing(false);
     }
   };
 
@@ -281,7 +276,18 @@ function FormPageContent() {
         actions={<FormActionButtons />}
         badge={<FormPhaseBanner phase={isPublished ? "published" : "draft"} />}
       >
-        <PrintAnswerLegend answerOptions={form.answerOptions} />
+        <PrintAnswerLegend
+          answerOptions={form.answerOptions}
+          secondaryOptions={
+            isPublished
+              ? formHasSecondaryAnswers(form)
+                ? form.secondaryOptions
+                : undefined
+              : form.secondaryInputEnabled
+                ? form.secondaryOptions
+                : undefined
+          }
+        />
 
         {!isPublished &&
           form.secondaryOptions &&

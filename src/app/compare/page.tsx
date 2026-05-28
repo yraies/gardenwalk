@@ -8,7 +8,13 @@ import DocumentPhaseNotice from "../../components/DocumentPhaseNotice";
 import EdgeActionButton from "../../components/EdgeActionButton";
 import LoadingState from "../../components/LoadingState";
 import PasswordModal from "../../components/PasswordModal";
+import PrintAnswerLegend from "../../components/PrintAnswerLegend";
 import ResponseOptionsLegend from "../../components/ResponseOptionsLegend";
+import {
+  ICON_MAP,
+  LEGACY_KEY_TO_ICON,
+  resolveOptionColors,
+} from "../../components/SelectionButton";
 import { useTheme } from "../../contexts/ThemeContext";
 import { computePasswordHash, decryptFormData } from "../../lib/crypto";
 import {
@@ -19,19 +25,6 @@ import {
   getOptionDisplay,
   getUnsetKey,
 } from "../../types/Form";
-import { AVAILABLE_ICONS } from "../../components/SelectionButton";
-
-const COMPARE_ICON_MAP = Object.fromEntries(
-  AVAILABLE_ICONS.map(({ key, Icon }) => [key, Icon]),
-);
-const COMPARE_LEGACY_KEY_TO_ICON: Record<string, string> = {
-  must: "exclamation",
-  like: "check",
-  open: "thumbsup",
-  maybe: "question",
-  off_limits: "minus",
-  unset: "empty",
-};
 import { getCompareIdentity } from "../../utils/compareIdentity";
 import {
   buildComparison,
@@ -231,25 +224,20 @@ function SelectionCell({
     options.find((o) => o.key === selectionKey) ?? options[options.length - 1];
   const isUnset = selectionKey === unsetKey;
   const displayMode = getOptionDisplay(option);
-
-  // Resolve colors: prefer theme-derived semantic colors, fall back to raw option.color
-  const chipColor = option.semantic
-    ? getChipColor(option.semantic)
-    : isUnset
-      ? getChipColor(undefined)
-      : null;
-  const bgColor = chipColor ? chipColor.bg : option.color;
-  const textColor = chipColor ? chipColor.text : "#ffffff";
+  const { bgColor, textColor } = resolveOptionColors(
+    option,
+    isUnset,
+    getChipColor,
+  );
 
   if (displayMode === "icon") {
-    const iconKey =
-      option.icon ?? COMPARE_LEGACY_KEY_TO_ICON[option.key] ?? "empty";
-    const Icon = COMPARE_ICON_MAP[iconKey] ?? COMPARE_ICON_MAP.empty;
+    const iconKey = option.icon ?? LEGACY_KEY_TO_ICON[option.key] ?? "empty";
+    const Icon = ICON_MAP[iconKey] ?? ICON_MAP.empty;
     return (
       <span title={option.label} className="inline-flex items-center">
         <Icon
           className="h-5 w-5"
-          style={{ color: isUnset ? undefined : bgColor }}
+          style={{ color: bgColor }}
           aria-hidden="true"
         />
       </span>
@@ -272,6 +260,7 @@ function SelectionCell({
 }
 
 type ComparisonColumnDisplay = {
+  id: string;
   primary: string;
   secondary?: string;
 };
@@ -289,7 +278,8 @@ function ComparisonTable({
   result: ComparisonResult;
   columns: ComparisonColumnDisplay[];
 }) {
-  // Derive column width from primary answer display mode
+  // Comparison columns are wider than form rows because each column carries
+  // a respondent header and may stack primary + secondary answers vertically.
   const primaryIsIcon =
     result.answerOptions &&
     result.answerOptions.length > 0 &&
@@ -313,9 +303,9 @@ function ComparisonTable({
             {/* Header row */}
             <div className="flex items-center gap-2 border-b border-th-line px-2 py-1.5 text-xs font-semibold text-th-ink-muted">
               <span className="min-w-0 flex-1">Question</span>
-              {columns.map((column, index) => (
+              {columns.map((column) => (
                 <span
-                  key={`col-${index}-${getColumnTitle(column)}`}
+                  key={`col-${column.id}`}
                   className={`flex ${colWidthClass} shrink-0 flex-col text-center leading-tight`}
                   title={getColumnTitle(column)}
                 >
@@ -346,7 +336,7 @@ function ComparisonTable({
 
                   return (
                     <span
-                      key={`cell-${formIndex}-${getColumnTitle(column)}`}
+                      key={`cell-${column.id}`}
                       className={`flex ${colWidthClass} shrink-0 flex-col items-center justify-center gap-0.5`}
                     >
                       <SelectionCell
@@ -899,6 +889,7 @@ function ComparePageContent() {
       loadedForms.map((form, index) => {
         const templateName = form.templateName?.trim();
         return {
+          id: form.compareIdentity,
           primary: displayLabels[index],
           secondary:
             templateName && templateName !== displayLabels[index]
@@ -1093,6 +1084,14 @@ function ComparePageContent() {
       {/* Comparison table */}
       {comparison?.isCompatible && (
         <>
+          <PrintAnswerLegend
+            answerOptions={comparison.answerOptions}
+            secondaryOptions={
+              comparison.formHasSecondary.some(Boolean)
+                ? comparison.secondaryOptions
+                : undefined
+            }
+          />
           <ResponseOptionsLegend
             answerOptions={comparison.answerOptions}
             secondaryOptions={

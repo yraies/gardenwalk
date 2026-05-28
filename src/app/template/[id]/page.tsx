@@ -308,6 +308,11 @@ function TemplatePageContent() {
         />
       }
     >
+      <PrintAnswerLegend
+        answerOptions={template.answerOptions}
+        secondaryOptions={template.secondaryOptions}
+      />
+
       {isFinalized ? (
         <ResponseOptionsLegend
           answerOptions={template.answerOptions}
@@ -331,8 +336,6 @@ function TemplatePageContent() {
           />
         </>
       )}
-
-      <PrintAnswerLegend answerOptions={template.answerOptions} />
 
       <FormCategoryList
         setDocument={setTemplate}
