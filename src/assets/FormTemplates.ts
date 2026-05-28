@@ -113,13 +113,13 @@ const RelationshipMenuLight = Form.new(
     ]),
   ],
   undefined,
-  "A lighter check-in for naming relationship expectations, priorities, and boundaries.",
+  "Name what you want and don't want by having a walk through 8 short categories.",
 );
 
 // Template 1: Relationship Menu (Advanced)
 const ids1 = stableIds(1);
 const RelationshipMenuAdvanced = Form.new(
-  "Relationship Menu (Advanced)",
+  "Relationship Menu (Detailed)",
   [
     ids1.c("Commitment", [
       ids1.q("Relationship labels"),
@@ -260,13 +260,13 @@ const RelationshipMenuAdvanced = Form.new(
     ]),
   ],
   undefined,
-  "A deeper relationship check-in with more detailed prompts across intimacy, logistics, care, autonomy, and future planning.",
+  "Name what you want and don't want by having a walk through 13 more detailed categories.",
 );
 
 // Template 4: Pen and Paper Preferences
 const ids4 = stableIds(4);
 const PenAndPaperTemplate = Form.new(
-  "Pen and Paper Preferences",
+  "TTRPG Preferences",
   [
     ids4.c("Frequency", [
       ids4.q("Dayily Games"),
@@ -287,7 +287,7 @@ const PenAndPaperTemplate = Form.new(
       ids4.q("Narrative"),
       ids4.q("Performative"),
       ids4.q("Simulationist"),
-      ids4.q("Competitive / Min-Maxing"),
+      ids4.q("Competitive / Wargaming"),
       ids4.q("Cooperative / Group Storytelling"),
     ]),
     ids4.c("Game Type", [
@@ -322,7 +322,7 @@ const PenAndPaperTemplate = Form.new(
     ]),
   ],
   undefined,
-  "Compare play preferences, comfort zones, and expectations before a tabletop campaign.",
+  "Compare preferences, comfort zones, and expectations before a pen and paper RPG campaign.",
 );
 
 // Template 5: Attraction Map — untangling what draws you to someone
@@ -337,24 +337,24 @@ const AttractionMapAnswerOptions: AnswerOption[] = [
     semantic: "must",
   },
   {
-    key: "a_little",
-    label: "A Little",
-    shortLabel: "Little",
+    key: "somewhat",
+    label: "Somewhat",
+    shortLabel: "Some",
     color: "#7094B0",
     icon: "check",
     semantic: "like",
   },
   {
-    key: "could_grow",
-    label: "Could Grow",
-    shortLabel: "Could",
+    key: "faintly",
+    label: "Faintly",
+    shortLabel: "Faint",
     color: "#C5A958",
     icon: "question",
     semantic: "maybe",
   },
   {
-    key: "no",
-    label: "No",
+    key: "not_really",
+    label: "Not Really",
     shortLabel: "No",
     color: "#908A82",
     icon: "x",
@@ -371,84 +371,81 @@ const AttractionMapAnswerOptions: AnswerOption[] = [
 const AttractionMapTemplate = Form.new(
   "Attraction Map",
   [
-    ids5.c("Aesthetic Attraction", [
+    ids5.c("Aesthetic", [
       ids5.q(
-        "I notice their appearance, style, movements, or expressions more than I usually notice other people's.",
+        "I notice how they look, move, dress, gesture, or express themselves more than I usually notice other people.",
       ),
       ids5.q(
-        "I enjoy looking at them or being visually aware of them, even when I do not want anything else to happen.",
+        "I enjoy being visually aware of them, even when we are not interacting much.",
       ),
       ids5.q(
-        "I find ordinary moments with them visually striking, graceful, charming, or beautiful.",
+        "Ordinary moments with them can feel visually striking, graceful, charming, or beautiful.",
       ),
       ids5.q(
-        "Something about their presence catches my attention repeatedly, even when we are not interacting much.",
-      ),
-    ]),
-
-    ids5.c("Sensual Attraction", [
-      ids5.q(
-        "I enjoy being physically near them, such as sitting close, walking side by side, or sharing quiet space.",
+        "Something about their visual presence keeps catching my attention again and again.",
       ),
       ids5.q(
-        "I feel drawn to ordinary affectionate touch with them, such as hugs, leaning, holding hands, or casual contact.",
-      ),
-      ids5.q(
-        "I imagine gentle or comforting physical closeness with them, without that necessarily becoming sexual.",
-      ),
-      ids5.q(
-        "Their physical presence feels calming, grounding, pleasant, or reassuring to be around.",
+        "I find myself wanting to look again, linger visually, or take in small details about them.",
       ),
     ]),
 
-    ids5.c("Sexual Attraction", [
+    ids5.c("Sensual", [
       ids5.q(
-        "I notice a sexual charge, tension, or bodily response around them that feels different from ordinary closeness.",
+        "I enjoy being physically near them, such as sitting close, walking beside them, or sharing quiet space.",
       ),
       ids5.q(
-        "I find myself imagining sexual situations with them, even if I am not sure I would want to act on them.",
+        "I feel drawn to small forms of affectionate contact with them, such as a hug, leaning, or casual touch.",
       ),
       ids5.q(
-        "I feel curious about what sexual chemistry with them would be like in practice.",
+        "I imagine gentle physical closeness with them without needing it to become sexual.",
       ),
       ids5.q(
-        "If they expressed sexual interest in me, I would want to seriously consider whether I shared that interest.",
-      ),
-    ]),
-
-    ids5.c("Romantic Attraction", [
-      ids5.q(
-        "I imagine having a distinct 'us' with them that feels different from ordinary friendship or companionship.",
+        "Their nearness feels physically pleasant in a way I notice.",
       ),
       ids5.q(
-        "I want to be special to them in a way that would matter even if nothing sexual happened.",
-      ),
-      ids5.q(
-        "I find myself imagining future scenarios where we are meaningfully present in each other's lives.",
-      ),
-      ids5.q(
-        "I feel drawn to gestures of chosen closeness with them, such as dates, anniversaries, shared rituals, or being recognized as important to each other.",
+        "I crave (non-sexual) closeness with them in a way that feels comforting, affectionate, or physically meaningful.",
       ),
     ]),
 
-    ids5.c("Emotional Attraction", [
+    ids5.c("Sexual", [
       ids5.q(
-        "I want to tell them things that feel personal, vulnerable, or emotionally important.",
+        "I notice moments where their presence, body, voice, or closeness feels sexually charged to me.",
       ),
       ids5.q(
-        "When something meaningful happens, I notice an impulse to share it with them.",
+        "I sometimes imagine what sexual chemistry with them might feel like.",
       ),
       ids5.q(
-        "I feel interested in their inner world: how they feel, what shaped them, and what matters to them.",
+        "Physical closeness with them can make me aware of sexual possibility.",
       ),
       ids5.q(
-        "Being emotionally understood by them, or understanding them in return, feels especially meaningful.",
+        "I feel a bodily pull toward sexual contact with them, even if I would not necessarily act on it.",
+      ),
+      ids5.q(
+        "I can imagine experimenting with engaging in sexual closeness with them in a clear, mutual, and welcome way.",
       ),
     ]),
 
-    ids5.c("Intellectual Attraction", [
+    ids5.c("Emotional", [
       ids5.q(
-        "I want to hear how they think through complicated, strange, or important questions.",
+        "I feel curious about what they feel, what matters to them, and what they carry inside.",
+      ),
+      ids5.q(
+        "I want to tell them things that feel personal, vulnerable, or emotionally meaningful.",
+      ),
+      ids5.q(
+        "When something important happens, I notice an impulse to share it with them.",
+      ),
+      ids5.q(
+        "Being understood by them, or understanding them in return, feels especially meaningful.",
+      ),
+      ids5.q(
+        "I want them to become someone with whom emotional openness feels natural, mutual, and important.",
+      ),
+    ]),
+
+    ids5.c("Intellectual", [
+      ids5.q(
+        "I enjoy hearing how they think, explain, question, joke, or make connections.",
       ),
       ids5.q(
         "Conversations with them make me notice new angles, ideas, or possibilities.",
@@ -457,59 +454,89 @@ const AttractionMapTemplate = Form.new(
         "I feel drawn to debate, explore, learn, or build understanding together with them.",
       ),
       ids5.q(
-        "Their mind, perspective, humor, or way of making connections keeps my attention.",
+        "Their mind, perspective, humor, curiosity, or creativity keeps my attention.",
+      ),
+      ids5.q(
+        "I seek out their thoughts because engaging with their mind feels unusually stimulating.",
       ),
     ]),
 
-    ids5.c("Spiritual / Existential Attraction", [
+    ids5.c("Existential", [
       ids5.q(
-        "I feel drawn to the way they relate to meaning, purpose, values, or the bigger picture of life.",
+        "I feel curious about the values, beliefs, or life principles that guide them.",
+      ),
+      ids5.q(
+        "I sense that our worldviews could challenge, deepen, or expand each other in an important way.",
       ),
       ids5.q(
         "Being around them makes me reflect on who I am, what matters to me, or how I want to live.",
       ),
       ids5.q(
-        "I sense that we might share, challenge, or deepen each other's worldview in an important way.",
+        "Their presence brings out a version acts more aligned to my personaliry, values or life goals.",
       ),
       ids5.q(
-        "Moments with them can feel unusually significant, symbolic, grounding, or expansive.",
-      ),
-    ]),
-
-    ids5.c("Platonic Attraction", [
-      ids5.q(
-        "I want them in my life as someone close, trusted, and personally important.",
-      ),
-      ids5.q(
-        "I imagine spending meaningful time with them without needing it to become romantic or sexual.",
-      ),
-      ids5.q(
-        "I feel drawn to care about their life, support them, and be supported by them.",
-      ),
-      ids5.q(
-        "I would value a committed or lasting bond with them even if it were clearly non-romantic.",
+        "I feel drawn to the way they relate to purpose, meaning, morality, spirituality, or the bigger picture of life.",
       ),
     ]),
 
-    ids5.c("Alterous / Queerplatonic Attraction", [
+    ids5.c("Platonic", [
       ids5.q(
-        "I feel drawn to a kind of closeness with them that does not fit neatly into friendship, romance, or sexual attraction.",
+        "I want to know them better as a friend, companion, or trusted person in my life.",
       ),
       ids5.q(
-        "I want a bond with them that feels personally significant, even if I do not know what category it belongs in.",
+        "I imagine spending meaningful time with them as part of a close and steady friendship.",
       ),
       ids5.q(
-        "I imagine forms of commitment, care, priority, or intimacy with them that would need their own definition.",
+        "I want to share ordinary parts of life with them, such as jokes, updates, routines, interests, or plans.",
       ),
       ids5.q(
-        "Standard labels like 'friend,' 'crush,' 'partner,' or 'date' feel too narrow, too loaded, or not quite right for what I notice.",
+        "I feel drawn to the ease, loyalty, humor, support, or familiarity of a close friendship with them.",
+      ),
+      ids5.q(
+        "I would value them as a lasting friend and trusted presence in my life.",
+      ),
+    ]),
+
+    ids5.c("Partnering", [
+      ids5.q(
+        "I imagine there being a distinct 'us' between us.",
+      ),
+      ids5.q(
+        "I want our connection to feel chosen, marked, or set apart from ordinary friendship.",
+      ),
+      ids5.q(
+        "I imagine shared rituals, gestures, routines, or moments that would mark us as important to each other.",
+      ),
+      ids5.q(
+        "I feel drawn to a shared rhythm of attention, closeness, and mutual priority with them.",
+      ),
+      ids5.q(
+        "I imagine us becoming important reference points in each other's daily life, choices, or future.",
+      ),
+    ]),
+
+    ids5.c("Queerplatonic", [
+      ids5.q(
+        "I feel drawn to a kind of closeness with them that does not fit neatly into familiar categories.",
+      ),
+      ids5.q(
+        "I want a bond with them that feels personally significant, even if I do not know what to call it.",
+      ),
+      ids5.q(
+        "I imagine a level of care, priority, or intimacy with them that feels deeper or more defined than ordinary friendship.",
+      ),
+      ids5.q(
+        "Standard labels like friend, crush, date, or partner feel too narrow, too loaded, or not quite right for what I notice.",
+      ),
+      ids5.q(
+        "I feel drawn to shape a connection with them on its own terms rather than follow an existing relationship script.",
       ),
     ]),
   ],
   AttractionMapAnswerOptions,
-  "Untangle the different kinds of attraction you notice so you can reflect with more nuance.",
+  "Reflect on the kinds of attraction, closeness, or interest you may feel toward another person."
 );
-
+/*
 // Template 6: What's Between Us — observational exploration of shared connection
 const ids6 = stableIds(6);
 const SharedConnectionAnswerOptions: AnswerOption[] = [
@@ -836,7 +863,7 @@ const RelationalDynamicsTemplate = Form.new(
   SharedConnectionAnswerOptions,
   "Explore the roles, dynamics, and patterns that shape how this relationship feels day to day.",
 );
-
+*/
 const Empty = Form.new(
   "New Template",
   [],
@@ -852,16 +879,16 @@ const FormTemplates = [
     name: "Attraction Map",
     template: AttractionMapTemplate,
   },
-  {
-    id: "shared_connection",
-    name: "What's Between Us",
-    template: SharedConnectionTemplate,
-  },
-  {
-    id: "relational_dynamics",
-    name: "How Do I See Us?",
-    template: RelationalDynamicsTemplate,
-  },
+//  {
+//    id: "shared_connection",
+//    name: "What's Between Us",
+//    template: SharedConnectionTemplate,
+//  },
+//  {
+//    id: "relational_dynamics",
+//    name: "How Do I See Us?",
+//    template: RelationalDynamicsTemplate,
+//  },
   {
     id: "rel_menu",
     name: "Relationship Menu",
@@ -869,7 +896,7 @@ const FormTemplates = [
   },
   {
     id: "rel_menu_adv",
-    name: "Relationship Menu (Advanced)",
+    name: "Detailed Rel. Menu",
     template: RelationshipMenuAdvanced,
   },
 ];
