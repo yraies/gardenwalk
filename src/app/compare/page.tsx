@@ -605,6 +605,9 @@ function ComparePageContent() {
   const [hasHydratedUrlState, setHasHydratedUrlState] = React.useState(false);
   const [pendingPassword, setPendingPassword] =
     React.useState<PendingPassword | null>(null);
+  const [pendingPasswordError, setPendingPasswordError] = React.useState<
+    string | null
+  >(null);
 
   const existingCanonicalIds = React.useMemo(
     () => new Set(loadedForms.map((f) => f.compareIdentity)),
@@ -675,6 +678,7 @@ function ComparePageContent() {
             formName: result.formName,
             passwordSalt: result.passwordSalt,
           });
+          setPendingPasswordError(null);
           return;
         }
         if (
@@ -744,6 +748,7 @@ function ComparePageContent() {
 
   const handlePasswordSubmit = async (password: string) => {
     if (!pendingPassword) return;
+    setPendingPasswordError(null);
     const { shareId, compareIdentity, passwordSalt } = pendingPassword;
     setError(null);
 
@@ -763,7 +768,7 @@ function ComparePageContent() {
 
       if (!res.ok) {
         const data = await res.json().catch(() => null);
-        setError(
+        setPendingPasswordError(
           res.status === 401
             ? "Invalid password"
             : (data?.error ?? "Failed to verify password"),
@@ -786,6 +791,7 @@ function ComparePageContent() {
       if (loadedForms.some((f) => f.compareIdentity === compareIdentity)) {
         setError("This form is already in the comparison");
         setPendingPassword(null);
+        setPendingPasswordError(null);
         return;
       }
       setLoadedForms((prev) => {
@@ -799,8 +805,9 @@ function ComparePageContent() {
         });
       });
       setPendingPassword(null);
+      setPendingPasswordError(null);
     } catch (error) {
-      setError(
+      setPendingPasswordError(
         error instanceof Error ? error.message : "Failed to verify password",
       );
     }
@@ -1044,12 +1051,14 @@ function ComparePageContent() {
           isOpen={true}
           onClose={() => {
             setPendingPassword(null);
+            setPendingPasswordError(null);
             setIsLoading(false);
           }}
           onSubmit={handlePasswordSubmit}
           mode="enter"
           title="Enter Password"
           description={`Enter the password for "${pendingPassword.formName}".`}
+          error={pendingPasswordError}
           submitLabelEnter="Add to Comparison"
         />
       )}

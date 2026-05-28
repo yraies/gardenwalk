@@ -73,6 +73,7 @@ function SharedFormPageContent() {
   const [formName, setFormName] = React.useState("");
   const [isDeleted, setIsDeleted] = React.useState(false);
   const [passwordSalt, setPasswordSalt] = React.useState<string | null>(null);
+  const [passwordError, setPasswordError] = React.useState<string | null>(null);
 
   const params = useParams();
   const shareId = params?.shareId as string;
@@ -181,69 +182,78 @@ function SharedFormPageContent() {
   }, [shareId, loadSharedForm]);
 
   const handlePasswordVerification = async (password: string) => {
-    // Build verification payload: use client-side hash if salt available
-    const verifyBody: Record<string, string> = {};
-    if (passwordSalt) {
-      verifyBody.passwordHash = computePasswordHash(password, passwordSalt);
-    } else {
-      verifyBody.password = password;
-    }
-
-    const response = await fetch(`/api/share/${shareId}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(verifyBody),
-    });
-
-    if (!response.ok) {
-      if (response.status === 401) {
-        throw new Error("Invalid password");
+    setPasswordError(null);
+    try {
+      // Build verification payload: use client-side hash if salt available
+      const verifyBody: Record<string, string> = {};
+      if (passwordSalt) {
+        verifyBody.passwordHash = computePasswordHash(password, passwordSalt);
+      } else {
+        verifyBody.password = password;
       }
 
-      if (response.status === 410) {
-        setNeedsPasswordVerification(false);
-        setIsDeleted(true);
+      const response = await fetch(`/api/share/${shareId}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(verifyBody),
+      });
+
+      if (!response.ok) {
+        if (response.status === 401) {
+          setPasswordError("Invalid password");
+          return;
+        }
+
+        if (response.status === 410) {
+          setNeedsPasswordVerification(false);
+          setIsDeleted(true);
+          return;
+        }
+
+        setPasswordError("Failed to verify password");
         return;
       }
 
-      throw new Error("Failed to verify password");
-    }
+      const data = await response.json();
+      let loadedForm: Form;
 
-    const data = await response.json();
-    let loadedForm: Form;
-
-    if (data.form.encrypted) {
-      try {
-        const encryptedData = JSON.parse(data.form.data);
-        const decryptedData = decryptFormData(encryptedData, password);
-        loadedForm = Form.fromPOJO(decryptedData as FormPOJO);
-      } catch (decryptError) {
-        console.error("Failed to decrypt form:", decryptError);
-        throw new Error("Failed to decrypt form data");
+      if (data.form.encrypted) {
+        try {
+          const encryptedData = JSON.parse(data.form.data);
+          const decryptedData = decryptFormData(encryptedData, password);
+          loadedForm = Form.fromPOJO(decryptedData as FormPOJO);
+        } catch (decryptError) {
+          console.error("Failed to decrypt form:", decryptError);
+          setPasswordError("Failed to decrypt form data");
+          return;
+        }
+      } else {
+        const parsedData = JSON.parse(data.form.data);
+        loadedForm = Form.fromPOJO(parsedData as FormPOJO);
       }
-    } else {
-      const parsedData = JSON.parse(data.form.data);
-      loadedForm = Form.fromPOJO(parsedData as FormPOJO);
+
+      setForm(loadedForm);
+      setNeedsPasswordVerification(false);
+      setFormName(data.form.name);
+      setShareInfo(data.shareInfo);
+
+      // Save to recently viewed shared forms
+      saveRecentSharedForm(localStorage, {
+        shareId,
+        compareIdentity: data.compareIdentity,
+        name: data.form.name,
+        respondentName: loadedForm.respondentName,
+        templateName: loadedForm.templateName,
+        structureFingerprint: computeStructureFingerprint(loadedForm),
+        date: new Date().toISOString(),
+        encrypted: data.form.encrypted,
+      });
+    } catch (verifyError) {
+      console.error("Error verifying shared form password:", verifyError);
+      setPasswordError("Failed to unlock shared form.");
     }
-
-    setForm(loadedForm);
-    setNeedsPasswordVerification(false);
-    setFormName(data.form.name);
-    setShareInfo(data.shareInfo);
-
-    // Save to recently viewed shared forms
-    saveRecentSharedForm(localStorage, {
-      shareId,
-      compareIdentity: data.compareIdentity,
-      name: data.form.name,
-      respondentName: loadedForm.respondentName,
-      templateName: loadedForm.templateName,
-      structureFingerprint: computeStructureFingerprint(loadedForm),
-      date: new Date().toISOString(),
-      encrypted: data.form.encrypted,
-    });
   };
 
   const startLocalDraft = () => {
@@ -323,6 +333,7 @@ function SharedFormPageContent() {
               ? `Enter the password for "${formName}".`
               : "This shared form requires a password to view."
           }
+          error={passwordError}
           submitLabelEnter="Open Shared Form"
         />
       </DocumentPageShell>

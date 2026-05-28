@@ -48,6 +48,7 @@ function SharedTemplatePageContent() {
   const [needsPasswordVerification, setNeedsPasswordVerification] =
     React.useState(false);
   const [passwordSalt, setPasswordSalt] = React.useState<string | null>(null);
+  const [passwordError, setPasswordError] = React.useState<string | null>(null);
   const router = useRouter();
   const params = useParams();
   const shareId = params?.shareId as string;
@@ -90,6 +91,7 @@ function SharedTemplatePageContent() {
   }, [shareId]);
 
   const handlePasswordVerification = async (password: string) => {
+    setPasswordError(null);
     try {
       // Build verification payload: use client-side hash if salt available
       const verifyBody: Record<string, string> = {};
@@ -109,7 +111,7 @@ function SharedTemplatePageContent() {
 
       if (!response.ok) {
         const data = await response.json();
-        alert(data.error || "Invalid password");
+        setPasswordError(data.error || "Invalid password");
         return;
       }
 
@@ -127,7 +129,7 @@ function SharedTemplatePageContent() {
       setNeedsPasswordVerification(false);
     } catch (verifyError) {
       console.error("Error verifying shared template password:", verifyError);
-      alert("Failed to unlock template.");
+      setPasswordError("Failed to unlock template.");
     }
   };
 
@@ -151,6 +153,7 @@ function SharedTemplatePageContent() {
               ? `Enter the password for "${templateName}".`
               : "This shared template requires a password to view."
           }
+          error={passwordError}
         />
       </div>
     );

@@ -10,10 +10,11 @@ import { validatePassword } from "../lib/crypto";
 interface PasswordModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (password: string, shouldEncrypt: boolean) => void;
+  onSubmit: (password: string, shouldEncrypt: boolean) => void | Promise<void>;
   mode: "set" | "enter";
   title?: string;
   description?: string;
+  error?: string | null;
   toggleLabel?: string;
   submitLabelWithPassword?: string;
   submitLabelWithoutPassword?: string;
@@ -27,6 +28,7 @@ const PasswordModal: React.FC<PasswordModalProps> = ({
   mode,
   title,
   description,
+  error,
   toggleLabel,
   submitLabelWithPassword,
   submitLabelWithoutPassword,
@@ -36,7 +38,7 @@ const PasswordModal: React.FC<PasswordModalProps> = ({
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
-  const [shouldEncrypt, setShouldEncrypt] = useState(true);
+  const [shouldEncrypt, setShouldEncrypt] = useState(false);
 
   const validation = validatePassword(password);
   const passwordsMatch = password === confirmPassword;
@@ -47,21 +49,21 @@ const PasswordModal: React.FC<PasswordModalProps> = ({
         ? validation.isValid && passwordsMatch
         : true; // Allow submission without password if not encrypting
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (canSubmit) {
-      onSubmit(password, shouldEncrypt);
+      await onSubmit(password, shouldEncrypt);
       // Reset form
       setPassword("");
       setConfirmPassword("");
-      setShouldEncrypt(true);
+      setShouldEncrypt(false);
     }
   };
 
   const handleCancel = () => {
     setPassword("");
     setConfirmPassword("");
-    setShouldEncrypt(true);
+    setShouldEncrypt(false);
     onClose();
   };
 
@@ -92,6 +94,11 @@ const PasswordModal: React.FC<PasswordModalProps> = ({
                   ? "Protect your form with a password"
                   : "This form is password protected")}
             </p>
+            {error && (
+              <p className="mt-2 text-sm text-th-danger" role="alert">
+                {error}
+              </p>
+            )}
           </div>
         </div>
 
