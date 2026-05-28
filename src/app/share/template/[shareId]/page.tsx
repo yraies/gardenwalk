@@ -20,6 +20,7 @@ import PageActionRails, {
 } from "../../../../components/PageActionRails";
 import PasswordModal from "../../../../components/PasswordModal";
 import PrintAnswerLegend from "../../../../components/PrintAnswerLegend";
+import ResponseOptionsLegend from "../../../../components/ResponseOptionsLegend";
 import { computePasswordHash, decryptFormData } from "../../../../lib/crypto";
 import { Form, type FormPOJO } from "../../../../types/Form";
 import {
@@ -250,6 +251,11 @@ function SharedTemplatePageContent() {
       }
     >
       <PrintAnswerLegend answerOptions={template.answerOptions} />
+
+      <ResponseOptionsLegend
+        answerOptions={template.answerOptions}
+        secondaryOptions={template.secondaryOptions}
+      />
 
       <FormCategoryList
         categories={template.categories}

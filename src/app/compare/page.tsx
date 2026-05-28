@@ -8,6 +8,7 @@ import DocumentPhaseNotice from "../../components/DocumentPhaseNotice";
 import EdgeActionButton from "../../components/EdgeActionButton";
 import LoadingState from "../../components/LoadingState";
 import PasswordModal from "../../components/PasswordModal";
+import ResponseOptionsLegend from "../../components/ResponseOptionsLegend";
 import { useTheme } from "../../contexts/ThemeContext";
 import { computePasswordHash, decryptFormData } from "../../lib/crypto";
 import {
@@ -15,8 +16,22 @@ import {
   Form,
   type FormPOJO,
   getEffectiveAnswerOptions,
+  getOptionDisplay,
   getUnsetKey,
 } from "../../types/Form";
+import { AVAILABLE_ICONS } from "../../components/SelectionButton";
+
+const COMPARE_ICON_MAP = Object.fromEntries(
+  AVAILABLE_ICONS.map(({ key, Icon }) => [key, Icon]),
+);
+const COMPARE_LEGACY_KEY_TO_ICON: Record<string, string> = {
+  must: "exclamation",
+  like: "check",
+  open: "thumbsup",
+  maybe: "question",
+  off_limits: "minus",
+  unset: "empty",
+};
 import { getCompareIdentity } from "../../utils/compareIdentity";
 import {
   buildComparison,
@@ -215,6 +230,7 @@ function SelectionCell({
   const option =
     options.find((o) => o.key === selectionKey) ?? options[options.length - 1];
   const isUnset = selectionKey === unsetKey;
+  const displayMode = getOptionDisplay(option);
 
   // Resolve colors: prefer theme-derived semantic colors, fall back to raw option.color
   const chipColor = option.semantic
@@ -224,6 +240,21 @@ function SelectionCell({
       : null;
   const bgColor = chipColor ? chipColor.bg : option.color;
   const textColor = chipColor ? chipColor.text : "#ffffff";
+
+  if (displayMode === "icon") {
+    const iconKey =
+      option.icon ?? COMPARE_LEGACY_KEY_TO_ICON[option.key] ?? "empty";
+    const Icon = COMPARE_ICON_MAP[iconKey] ?? COMPARE_ICON_MAP.empty;
+    return (
+      <span title={option.label} className="inline-flex items-center">
+        <Icon
+          className="h-5 w-5"
+          style={{ color: isUnset ? undefined : bgColor }}
+          aria-hidden="true"
+        />
+      </span>
+    );
+  }
 
   return (
     <span
@@ -258,18 +289,12 @@ function ComparisonTable({
   result: ComparisonResult;
   columns: ComparisonColumnDisplay[];
 }) {
-  // Flatten columns into a sequence of cells, inserting an extra "secondary"
-  // cell after the primary cell for each form that has any non-unset
-  // secondary answer. Each entry records its source form index and kind.
-  const cellSpec = columns.flatMap((_column, index) => {
-    const cells: { formIndex: number; kind: "primary" | "secondary" }[] = [
-      { formIndex: index, kind: "primary" },
-    ];
-    if (result.formHasSecondary[index]) {
-      cells.push({ formIndex: index, kind: "secondary" });
-    }
-    return cells;
-  });
+  // Derive column width from primary answer display mode
+  const primaryIsIcon =
+    result.answerOptions &&
+    result.answerOptions.length > 0 &&
+    getOptionDisplay(result.answerOptions[0]) === "icon";
+  const colWidthClass = primaryIsIcon ? "w-14" : "w-24";
 
   return (
     <div className="document-sheet flex flex-col gap-3">
@@ -288,76 +313,57 @@ function ComparisonTable({
             {/* Header row */}
             <div className="flex items-center gap-2 border-b border-th-line px-2 py-1.5 text-xs font-semibold text-th-ink-muted">
               <span className="min-w-0 flex-1">Question</span>
-              {cellSpec.map((cell) => {
-                const column = columns[cell.formIndex];
-                const title =
-                  cell.kind === "secondary"
-                    ? `${getColumnTitle(column)} (secondary)`
-                    : getColumnTitle(column);
-                return (
-                  <span
-                    key={`${cell.formIndex}-${cell.kind}`}
-                    className="flex w-24 shrink-0 flex-col text-center leading-tight"
-                    title={title}
-                  >
-                    <span className="truncate">
-                      {column.primary}
-                      {cell.kind === "secondary" ? " · 2°" : ""}
+              {columns.map((column, index) => (
+                <span
+                  key={`col-${index}-${getColumnTitle(column)}`}
+                  className={`flex ${colWidthClass} shrink-0 flex-col text-center leading-tight`}
+                  title={getColumnTitle(column)}
+                >
+                  <span className="truncate">{column.primary}</span>
+                  {column.secondary && (
+                    <span className="truncate text-[10px] font-normal text-th-ink-muted">
+                      {column.secondary}
                     </span>
-                    {column.secondary && (
-                      <span className="truncate text-[10px] font-normal text-th-ink-muted">
-                        {column.secondary}
-                      </span>
-                    )}
-                  </span>
-                );
-              })}
+                  )}
+                </span>
+              ))}
             </div>
             {/* Question rows */}
-            {cat.rows.map((row) => {
-              return (
-                <div
-                  key={row.questionId}
-                  className="flex items-center gap-2 px-2 py-1"
-                >
-                  <span className="min-w-0 flex-1 text-sm">
-                    {row.questionText}
-                  </span>
-                  {cellSpec.map((cell) => {
-                    if (cell.kind === "primary") {
-                      const sel = row.selections[cell.formIndex];
-                      return (
-                        <span
-                          key={`${cell.formIndex}-primary`}
-                          className="flex w-24 shrink-0 justify-center"
-                        >
-                          <SelectionCell
-                            selectionKey={sel}
-                            answerOptions={result.answerOptions}
-                          />
-                        </span>
-                      );
-                    }
-                    const secSel = row.secondarySelections[cell.formIndex];
-                    return (
-                      <span
-                        key={`${cell.formIndex}-secondary`}
-                        className="flex w-24 shrink-0 justify-center"
-                      >
-                        {secSel !== undefined ? (
-                          <SelectionCell
-                            selectionKey={secSel}
-                            answerOptions={result.secondaryOptions}
-                          />
-                        ) : (
-                          <span className="text-th-ink-muted">—</span>
-                        )}
-                      </span>
-                    );
-                  })}
-                </div>
-              );
-            })}
+            {cat.rows.map((row) => (
+              <div
+                key={row.questionId}
+                className="flex items-center gap-2 px-2 py-1"
+              >
+                <span className="min-w-0 flex-1 text-sm">
+                  {row.questionText}
+                </span>
+                {columns.map((column, formIndex) => {
+                  const primarySel = row.selections[formIndex];
+                  const hasSecondary = result.formHasSecondary[formIndex];
+                  const secondarySel = hasSecondary
+                    ? row.secondarySelections[formIndex]
+                    : undefined;
+
+                  return (
+                    <span
+                      key={`cell-${formIndex}-${getColumnTitle(column)}`}
+                      className={`flex ${colWidthClass} shrink-0 flex-col items-center justify-center gap-0.5`}
+                    >
+                      <SelectionCell
+                        selectionKey={primarySel}
+                        answerOptions={result.answerOptions}
+                      />
+                      {secondarySel !== undefined && (
+                        <SelectionCell
+                          selectionKey={secondarySel}
+                          answerOptions={result.secondaryOptions}
+                        />
+                      )}
+                    </span>
+                  );
+                })}
+              </div>
+            ))}
           </div>
         </section>
       ))}
@@ -1086,7 +1092,17 @@ function ComparePageContent() {
 
       {/* Comparison table */}
       {comparison?.isCompatible && (
-        <ComparisonTable result={comparison} columns={displayColumns} />
+        <>
+          <ResponseOptionsLegend
+            answerOptions={comparison.answerOptions}
+            secondaryOptions={
+              comparison.formHasSecondary.some(Boolean)
+                ? comparison.secondaryOptions
+                : undefined
+            }
+          />
+          <ComparisonTable result={comparison} columns={displayColumns} />
+        </>
       )}
     </>
   );
