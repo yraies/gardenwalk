@@ -23,6 +23,7 @@ import PageActionRails, {
 } from "../../../components/PageActionRails";
 import PasswordModal from "../../../components/PasswordModal";
 import PrintAnswerLegend from "../../../components/PrintAnswerLegend";
+import ResponseOptionsLegend from "../../../components/ResponseOptionsLegend";
 import ShareInfoOverlay from "../../../components/ShareInfoOverlay";
 import {
   FormContextProvider,
@@ -421,6 +422,13 @@ function SharedFormPageContent() {
       overlay={shareInfo ? <ShareInfoOverlay shareInfo={shareInfo} /> : null}
     >
       <PrintAnswerLegend
+        answerOptions={form.answerOptions}
+        secondaryOptions={
+          formHasSecondaryAnswers(form) ? form.secondaryOptions : undefined
+        }
+      />
+
+      <ResponseOptionsLegend
         answerOptions={form.answerOptions}
         secondaryOptions={
           formHasSecondaryAnswers(form) ? form.secondaryOptions : undefined

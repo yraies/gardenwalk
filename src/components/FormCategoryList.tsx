@@ -2,7 +2,6 @@ import { PlusIcon } from "@heroicons/react/16/solid";
 import type { Dispatch, SetStateAction } from "react";
 import type { AnswerOption, Category, Form } from "../types/Form";
 import CategoryBox from "./CategoryPage";
-import ResponseOptionsLegend from "./ResponseOptionsLegend";
 
 interface FormCategoryListProps {
   setDocument?: Dispatch<SetStateAction<Form>>;
@@ -35,15 +34,6 @@ export default function FormCategoryList({
       className="document-sheet form-categories not-print:flex not-print:flex-col not-print:gap-2"
       aria-label="Form categories"
     >
-      {answerMode !== "hidden" && (
-        <ResponseOptionsLegend
-          answerOptions={answerOptions}
-          secondaryOptions={
-            secondaryInputEnabled ? secondaryOptions : undefined
-          }
-        />
-      )}
-
       {categories.map((category) => (
         <CategoryBox
           category={category}

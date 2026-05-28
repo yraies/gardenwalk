@@ -11,6 +11,7 @@ import FormPhaseBanner from "../../../components/FormPhaseBanner";
 import LoadingState from "../../../components/LoadingState";
 import PasswordModal from "../../../components/PasswordModal";
 import PrintAnswerLegend from "../../../components/PrintAnswerLegend";
+import ResponseOptionsLegend from "../../../components/ResponseOptionsLegend";
 import ShareModal from "../../../components/ShareModal";
 import { FormActionsProvider } from "../../../contexts/FormActionsContext";
 import {
@@ -311,6 +312,19 @@ function FormPageContent() {
               </label>
             </div>
           )}
+
+        <ResponseOptionsLegend
+          answerOptions={form.answerOptions}
+          secondaryOptions={
+            isPublished
+              ? formHasSecondaryAnswers(form)
+                ? form.secondaryOptions
+                : undefined
+              : form.secondaryInputEnabled
+                ? form.secondaryOptions
+                : undefined
+          }
+        />
 
         <FormCategoryList
           setDocument={setForm}
