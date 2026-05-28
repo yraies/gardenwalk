@@ -11,6 +11,7 @@ import {
   type AnswerSemantic,
   DEFAULT_ANSWER_OPTIONS,
   getEffectiveAnswerOptions,
+  getOptionDisplay,
   PRESET_COLORS,
 } from "../types/Form";
 import IconButton from "./IconButton";
@@ -251,6 +252,18 @@ export default function AnswerSchemaEditor({
     return option.color;
   };
 
+  /** Current schema-level display mode (derived from the first option). */
+  const schemaDisplay: "icon" | "text" =
+    effectiveOptions.length > 0
+      ? getOptionDisplay(effectiveOptions[0])
+      : "text";
+
+  /** Set display mode for ALL options in this schema at once. */
+  const setSchemaDisplay = (mode: "icon" | "text") => {
+    const updated = effectiveOptions.map((o) => ({ ...o, display: mode }));
+    onChange(updated);
+  };
+
   if (disabled) {
     return (
       <div className="document-sheet no-print mb-2 border border-th-line bg-th-paper px-4 py-3 print:hidden">
@@ -339,6 +352,34 @@ export default function AnswerSchemaEditor({
             </div>
           )}
 
+          {/* Schema-level display mode toggle — always visible when options exist */}
+          {effectiveOptions.length > 0 && (
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-th-ink-muted">Display as:</span>
+              {(["text", "icon"] as const).map((mode) => {
+                const isActive = schemaDisplay === mode;
+                return (
+                  <button
+                    key={mode}
+                    type="button"
+                    className={`rounded-sm border px-1.5 py-0.5 text-xs capitalize ${
+                      isActive
+                        ? "border-th-primary ring-1 ring-th-primary"
+                        : "border-th-line hover:bg-th-paper-soft"
+                    }`}
+                    onClick={() => setSchemaDisplay(mode)}
+                    disabled={!isCustom}
+                    title={`Render all options as ${mode === "text" ? "labels" : "icons"}`}
+                    aria-label={`Set all options to ${mode} display`}
+                    aria-pressed={isActive}
+                  >
+                    {mode === "text" ? "Labels" : "Icons"}
+                  </button>
+                );
+              })}
+            </div>
+          )}
+
           <div className="space-y-1">
             {effectiveOptions.map((option, index) => {
               const isLast = index === effectiveOptions.length - 1;
@@ -378,17 +419,56 @@ export default function AnswerSchemaEditor({
                       disabled={!isCustom}
                       aria-label="Answer label"
                     />
-                    <input
-                      type="text"
-                      value={option.shortLabel}
-                      onChange={(e) =>
-                        updateOption(index, "shortLabel", e.target.value)
-                      }
-                      placeholder="Short"
-                      className="w-16 border-b border-th-line bg-transparent px-1 py-0.5 text-sm focus:outline-none"
-                      disabled={!isCustom}
-                      aria-label="Short label"
-                    />
+
+                    {/* In text mode: short label input. In icon mode: clickable icon preview. */}
+                    {schemaDisplay === "text" ? (
+                      <input
+                        type="text"
+                        value={option.shortLabel}
+                        onChange={(e) =>
+                          updateOption(index, "shortLabel", e.target.value)
+                        }
+                        placeholder="Short"
+                        className="w-16 border-b border-th-line bg-transparent px-1 py-0.5 text-sm focus:outline-none"
+                        disabled={!isCustom}
+                        aria-label="Short label"
+                      />
+                    ) : (
+                      (() => {
+                        const iconKey = option.icon ?? "empty";
+                        const iconEntry = AVAILABLE_ICONS.find(
+                          (i) => i.key === iconKey,
+                        );
+                        const Icon = iconEntry
+                          ? iconEntry.Icon
+                          : AVAILABLE_ICONS[AVAILABLE_ICONS.length - 1].Icon;
+                        return (
+                          <button
+                            type="button"
+                            className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-sm border ${
+                              isPickerOpen
+                                ? "border-th-primary ring-1 ring-th-primary"
+                                : "border-th-line hover:bg-th-paper-soft"
+                            }`}
+                            onClick={() =>
+                              isCustom &&
+                              setPickerOpenIndex(isPickerOpen ? null : index)
+                            }
+                            disabled={!isCustom}
+                            title={`Icon: ${iconEntry?.label ?? "Empty"} — click to change`}
+                            aria-label={`Change icon for ${option.label || "answer option"}`}
+                          >
+                            <Icon
+                              className="h-4 w-4"
+                              style={{
+                                color: getSwatchColor(option, isLast),
+                              }}
+                              aria-hidden="true"
+                            />
+                          </button>
+                        );
+                      })()
+                    )}
 
                     {isCustom && !isLast && (
                       <div

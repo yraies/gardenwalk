@@ -2,6 +2,7 @@ import {
   type AnswerOption,
   Category,
   Form,
+  getOptionDisplay,
   getUnsetKey,
   Question,
 } from "../Form";
@@ -94,5 +95,40 @@ describe("template editing model behavior", () => {
       "A helpful framing note.",
     );
     expect(form.withoutAnswers().description).toBe("A helpful framing note.");
+  });
+
+  test("answer option display defaults to text and round-trips through fromPOJO", () => {
+    const optionsWithoutDisplay: AnswerOption[] = [
+      { key: "yes", label: "Yes", shortLabel: "Y", color: "#00aa00" },
+      { key: "blank", label: "Blank", shortLabel: "-", color: "#999999" },
+    ];
+    expect(getOptionDisplay(optionsWithoutDisplay[0])).toBe("text");
+
+    // When the schema-level toggle sets all options to "icon"
+    const optionsAllIcon: AnswerOption[] = [
+      {
+        key: "yes",
+        label: "Yes",
+        shortLabel: "Y",
+        color: "#00aa00",
+        display: "icon",
+      },
+      {
+        key: "blank",
+        label: "Blank",
+        shortLabel: "-",
+        color: "#999999",
+        display: "icon",
+      },
+    ];
+
+    const form = Form.fromPOJO({
+      name: "Template",
+      categories: [],
+      answerOptions: optionsAllIcon,
+    });
+
+    expect(form.answerOptions?.[0].display).toBe("icon");
+    expect(form.answerOptions?.[1].display).toBe("icon");
   });
 });

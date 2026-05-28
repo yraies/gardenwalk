@@ -1,10 +1,10 @@
 "use client";
 
-import { useDisplayPreferences } from "../contexts/DisplayPreferencesContext";
 import { useTheme } from "../contexts/ThemeContext";
 import {
   type AnswerOption,
   getEffectiveAnswerOptions,
+  getOptionDisplay,
   getUnsetKey,
 } from "../types/Form";
 import { AVAILABLE_ICONS } from "./SelectionButton";
@@ -29,7 +29,6 @@ interface ResponseOptionsLegendProps {
 export default function ResponseOptionsLegend({
   answerOptions,
 }: ResponseOptionsLegendProps) {
-  const { showIcon } = useDisplayPreferences();
   const { getChipColor } = useTheme();
   const options = getEffectiveAnswerOptions(answerOptions).filter(
     (option) => option.label.trim().length > 0,
@@ -55,6 +54,7 @@ export default function ResponseOptionsLegend({
           const iconKey =
             option.icon ?? LEGACY_KEY_TO_ICON[option.key] ?? "empty";
           const Icon = ICON_MAP[iconKey] ?? ICON_MAP.empty;
+          const showIcon = getOptionDisplay(option) === "icon";
 
           return (
             <li key={option.key} className="flex items-center gap-1.5 text-xs">

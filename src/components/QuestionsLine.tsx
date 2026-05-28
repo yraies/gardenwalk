@@ -10,6 +10,7 @@ import type {
   CategoryID,
   Question,
 } from "../types/Form";
+import { getOptionDisplay } from "../types/Form";
 import IconButton from "./IconButton";
 import SelectionButton from "./SelectionButton";
 
@@ -110,9 +111,18 @@ function QuestionLine({
       )}
 
       {/* Answer slot: fixed width so buttons line up across rows even when
-          some rows render no button (answerMode === "hidden"). */}
+          some rows render no button (answerMode === "hidden").
+          Width adapts to display mode: narrower for icons, wider for text labels. */}
       {answerMode !== "hidden" && (
-        <div className="flex w-20 shrink-0 items-center justify-end print:hidden">
+        <div
+          className={`flex shrink-0 items-center justify-center print:hidden ${
+            answerOptions &&
+            answerOptions.length > 0 &&
+            getOptionDisplay(answerOptions[0]) === "icon"
+              ? "w-10"
+              : "w-20"
+          }`}
+        >
           <SelectionButton
             selection={question.selection}
             onClick={() => {

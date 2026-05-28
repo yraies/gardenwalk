@@ -2,8 +2,6 @@ import {
   ArrowDownTrayIcon,
   CloudArrowUpIcon,
   DocumentDuplicateIcon,
-  FaceSmileIcon,
-  NewspaperIcon,
   PencilSquareIcon,
   PlayIcon,
   PrinterIcon,
@@ -13,7 +11,6 @@ import {
 } from "@heroicons/react/16/solid";
 import { useRouter } from "next/navigation";
 import type React from "react";
-import { useDisplayPreferences } from "../contexts/DisplayPreferencesContext";
 import { useFormActions } from "../contexts/FormActionsContext";
 import { createCompareSession } from "../utils/compareSession";
 import { printCurrentView } from "../utils/formActions";
@@ -46,7 +43,6 @@ export default function FormActionButtons() {
     handleShare,
   } = useFormActions();
 
-  const { showIcon, setShowIcon } = useDisplayPreferences();
   const router = useRouter();
 
   const leftActions: ActionConfig[] = [];
@@ -156,19 +152,6 @@ export default function FormActionButtons() {
       icon: <ShareIcon className="h-5 w-5" />,
     });
   }
-
-  rightActions.push({
-    key: "display",
-    label: showIcon ? "Text Labels" : "Icons",
-    onClick: () => setShowIcon(!showIcon),
-    title: showIcon ? "Show Text Labels" : "Show Icons",
-    variant: "default",
-    icon: !showIcon ? (
-      <NewspaperIcon className="h-5 w-5" />
-    ) : (
-      <FaceSmileIcon className="h-5 w-5" />
-    ),
-  });
 
   return (
     <PageActionRails leftActions={leftActions} rightActions={rightActions} />

@@ -12,7 +12,6 @@ import LoadingState from "../../../components/LoadingState";
 import PasswordModal from "../../../components/PasswordModal";
 import PrintAnswerLegend from "../../../components/PrintAnswerLegend";
 import ShareModal from "../../../components/ShareModal";
-import { DisplayPreferencesProvider } from "../../../contexts/DisplayPreferencesContext";
 import { FormActionsProvider } from "../../../contexts/FormActionsContext";
 import {
   FormContextProvider,
@@ -321,9 +320,7 @@ const FormPageContentClientOnly = dynamic(
 export default function FormPage() {
   return (
     <FormContextProvider>
-      <DisplayPreferencesProvider initialShowIcon={false}>
-        <FormPageContentClientOnly />
-      </DisplayPreferencesProvider>
+      <FormPageContentClientOnly />
     </FormContextProvider>
   );
 }

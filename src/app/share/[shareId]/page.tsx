@@ -24,7 +24,6 @@ import PageActionRails, {
 import PasswordModal from "../../../components/PasswordModal";
 import PrintAnswerLegend from "../../../components/PrintAnswerLegend";
 import ShareInfoOverlay from "../../../components/ShareInfoOverlay";
-import { DisplayPreferencesProvider } from "../../../contexts/DisplayPreferencesContext";
 import {
   FormContextProvider,
   useFormContext,
@@ -433,9 +432,7 @@ export default dynamic(
   () =>
     Promise.resolve(() => (
       <FormContextProvider>
-        <DisplayPreferencesProvider initialShowIcon={true}>
-          <SharedFormPageContent />
-        </DisplayPreferencesProvider>
+        <SharedFormPageContent />
       </FormContextProvider>
     )),
   { ssr: false },

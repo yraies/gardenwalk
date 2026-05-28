@@ -399,9 +399,7 @@ const AttractionMapTemplate = Form.new(
       ids5.q(
         "I imagine gentle physical closeness with them to be calming and comforting.",
       ),
-      ids5.q(
-        "Their nearness feels physically pleasant in a way I notice.",
-      ),
+      ids5.q("Their nearness feels physically pleasant in a way I notice."),
       ids5.q(
         "I crave (non-sexual) closeness with them in a way that feels comforting and affectionate.",
       ),
@@ -499,9 +497,7 @@ const AttractionMapTemplate = Form.new(
     ]),
 
     ids5.c("Partnering", [
-      ids5.q(
-        "I imagine there being a distinct 'us' between us.",
-      ),
+      ids5.q("I imagine there being a distinct 'us' between us."),
       ids5.q(
         "I want our connection to feel chosen, marked, or set apart from ordinary friendship.",
       ),
@@ -535,7 +531,7 @@ const AttractionMapTemplate = Form.new(
     ]),
   ],
   AttractionMapAnswerOptions,
-  "Reflect on the kinds of attraction, closeness, or interest you may feel toward another person."
+  "Reflect on the kinds of attraction, closeness, or interest you may feel toward another person.",
 );
 
 // Template 6: What's Between Us — observational exploration of shared connection
@@ -886,11 +882,11 @@ const FormTemplates = [
     name: "Connection Fit",
     template: SharedConnectionTemplate,
   },
-//  {
-//    id: "relational_dynamics",
-//    name: "How Do I See Us?",
-//    template: RelationalDynamicsTemplate,
-//  },
+  //  {
+  //    id: "relational_dynamics",
+  //    name: "How Do I See Us?",
+  //    template: RelationalDynamicsTemplate,
+  //  },
   {
     id: "rel_menu",
     name: "Relationship Menu",

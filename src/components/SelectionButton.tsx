@@ -10,11 +10,11 @@ import {
 } from "@heroicons/react/16/solid";
 import dynamic from "next/dynamic";
 import type React from "react";
-import { useDisplayPreferences } from "../contexts/DisplayPreferencesContext";
 import { useTheme } from "../contexts/ThemeContext";
 import {
   type AnswerOption,
   getEffectiveAnswerOptions,
+  getOptionDisplay,
   getUnsetKey,
 } from "../types/Form";
 
@@ -31,6 +31,84 @@ function EmptyCircleIcon(props: React.ComponentProps<"svg">) {
       {...props}
     >
       <circle cx="10" cy="10" r="7" />
+    </svg>
+  );
+}
+
+/** Arrow pointing up-right at 45°. */
+function ArrowUpRightIcon(props: React.ComponentProps<"svg">) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 20 20"
+      fill="currentColor"
+      aria-hidden="true"
+      {...props}
+    >
+      <path
+        fillRule="evenodd"
+        d="M5.22 14.78a.75.75 0 010-1.06l7.72-7.72H7.5a.75.75 0 010-1.5h7.25a.75.75 0 01.75.75v7.25a.75.75 0 01-1.5 0V7.06l-7.72 7.72a.75.75 0 01-1.06 0z"
+        clipRule="evenodd"
+      />
+    </svg>
+  );
+}
+
+/** Arrow pointing down-right at 45°. */
+function ArrowDownRightIcon(props: React.ComponentProps<"svg">) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 20 20"
+      fill="currentColor"
+      aria-hidden="true"
+      {...props}
+    >
+      <path
+        fillRule="evenodd"
+        d="M5.22 5.22a.75.75 0 011.06 0l7.72 7.72V7.5a.75.75 0 011.5 0v7.25a.75.75 0 01-.75.75H7.5a.75.75 0 010-1.5h5.44L5.22 6.28a.75.75 0 010-1.06z"
+        clipRule="evenodd"
+      />
+    </svg>
+  );
+}
+
+/** A simple rising trendline. */
+function TrendUpIcon(props: React.ComponentProps<"svg">) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 20 20"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.5}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      {...props}
+    >
+      <polyline points="4,14 8,10 12,12 16,6" />
+      <polyline points="12,6 16,6 16,10" />
+    </svg>
+  );
+}
+
+/** A simple falling trendline. */
+function TrendDownIcon(props: React.ComponentProps<"svg">) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 20 20"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.5}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      {...props}
+    >
+      <polyline points="4,6 8,10 12,8 16,14" />
+      <polyline points="12,14 16,14 16,10" />
     </svg>
   );
 }
@@ -55,6 +133,14 @@ export const AVAILABLE_ICONS: {
   { key: "heart", label: "Heart", Icon: HeartIcon },
   { key: "star", label: "Star", Icon: StarIcon },
   { key: "thumbsup", label: "Thumbs Up", Icon: HandThumbUpIcon },
+  { key: "arrow-up-right", label: "Arrow Up-Right", Icon: ArrowUpRightIcon },
+  {
+    key: "arrow-down-right",
+    label: "Arrow Down-Right",
+    Icon: ArrowDownRightIcon,
+  },
+  { key: "trend-up", label: "Trend Up", Icon: TrendUpIcon },
+  { key: "trend-down", label: "Trend Down", Icon: TrendDownIcon },
   { key: "empty", label: "Empty", Icon: EmptyCircleIcon },
 ];
 
@@ -106,7 +192,6 @@ const SelectionButtonComponent: React.FC<SelectionButtonProps> = ({
   disabled = false,
   answerOptions,
 }) => {
-  const { showIcon } = useDisplayPreferences();
   const { getChipColor } = useTheme();
   const options = getEffectiveAnswerOptions(answerOptions);
   const unsetKey = getUnsetKey(answerOptions);
@@ -116,6 +201,7 @@ const SelectionButtonComponent: React.FC<SelectionButtonProps> = ({
 
   const Icon = getIconForOption(option);
   const isSelected = selection !== unsetKey;
+  const displayMode = getOptionDisplay(option);
 
   // Resolve colors: prefer theme-derived semantic colors, fall back to raw option.color
   const isUnset = selection === unsetKey;
@@ -128,7 +214,7 @@ const SelectionButtonComponent: React.FC<SelectionButtonProps> = ({
   const textColor = chipColor ? chipColor.text : "#ffffff";
 
   // Icon button rendering
-  if (showIcon) {
+  if (displayMode === "icon") {
     return (
       <button
         type="button"

@@ -28,6 +28,15 @@ export type AnswerSemantic =
   | "misc";
 
 /**
+ * Visual rendering mode for an answer option's button/legend chip.
+ * - "text": render the shortLabel inside a colored pill button.
+ * - "icon": render the option's icon only.
+ * Decided per-option by the template creator. Older data without this field
+ * defaults to "text".
+ */
+export type AnswerDisplay = "icon" | "text";
+
+/**
  * Defines one answer option in a template-wide answer schema.
  * The `key` is stored in `Question.selection` and must be unique within a schema.
  */
@@ -41,7 +50,17 @@ export type AnswerOption = {
   icon?: string;
   /** Semantic tier for theme-aware coloring. */
   semantic?: AnswerSemantic;
+  /**
+   * How this option should be rendered. Defaults to "text" when omitted so
+   * older data continues to render in label/pill mode.
+   */
+  display?: AnswerDisplay;
 };
+
+/** Returns the effective display mode for an option, defaulting to "text". */
+export function getOptionDisplay(option: AnswerOption): AnswerDisplay {
+  return option.display ?? "text";
+}
 
 /**
  * Preset color palette for answer options.
