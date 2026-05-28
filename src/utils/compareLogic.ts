@@ -1,4 +1,9 @@
-import { type AnswerOption, type Form, getUnsetKey } from "../types/Form";
+import {
+  type AnswerOption,
+  type Form,
+  formHasSecondaryAnswers,
+  getUnsetKey,
+} from "../types/Form";
 
 /** A loaded form with its display label. */
 export type ComparisonEntry = {
@@ -12,6 +17,11 @@ export type ComparisonRow = {
   questionText: string;
   /** One selection key per form, in the same order as the entries array. */
   selections: string[];
+  /**
+   * One secondary selection per form. Entry is undefined when the form
+   * either lacks a secondary schema or has no non-unset secondary answers.
+   */
+  secondarySelections: (string | undefined)[];
 };
 
 /** A category section across all compared forms. */
@@ -26,6 +36,10 @@ export type ComparisonResult = {
   categories: ComparisonCategory[];
   /** The answer options to use for display (from the first form). */
   answerOptions: AnswerOption[] | undefined;
+  /** The secondary options to use for display (from the first form that has any). */
+  secondaryOptions: AnswerOption[] | undefined;
+  /** For each entry, whether it should contribute a secondary column. */
+  formHasSecondary: boolean[];
   /** Whether the forms are structurally compatible (share question IDs). */
   isCompatible: boolean;
   /** How many question IDs overlap across all forms. */
@@ -43,6 +57,8 @@ export function buildComparison(entries: ComparisonEntry[]): ComparisonResult {
     return {
       categories: [],
       answerOptions: undefined,
+      secondaryOptions: undefined,
+      formHasSecondary: [],
       isCompatible: false,
       overlapCount: 0,
       totalQuestionCount: 0,
@@ -51,6 +67,14 @@ export function buildComparison(entries: ComparisonEntry[]): ComparisonResult {
 
   // Use the first form's answer options for display
   const answerOptions = entries[0].form.answerOptions;
+
+  // Per-form secondary visibility and a representative secondary schema
+  // (taken from the first form that has any non-unset secondary answers).
+  const formHasSecondary = entries.map((e) => formHasSecondaryAnswers(e.form));
+  const firstWithSecondary = entries.find((e) =>
+    formHasSecondaryAnswers(e.form),
+  );
+  const secondaryOptions = firstWithSecondary?.form.secondaryOptions;
 
   // Collect all unique category IDs in order (preserving first-form order,
   // then appending any extras from subsequent forms)
@@ -110,7 +134,18 @@ export function buildComparison(entries: ComparisonEntry[]): ComparisonResult {
           );
           return question ? question.selection : unsetKey;
         });
-        return { questionId, questionText, selections };
+        const secondarySelections = entries.map((entry, idx) => {
+          if (!formHasSecondary[idx]) return undefined;
+          const cat = entry.form.categories.find(
+            (c) => c.id.toString() === catId,
+          );
+          if (!cat) return undefined;
+          const question = cat.questions.find(
+            (q) => q.id.toString() === questionId,
+          );
+          return question?.secondarySelection;
+        });
+        return { questionId, questionText, selections, secondarySelections };
       },
     );
 
@@ -146,6 +181,8 @@ export function buildComparison(entries: ComparisonEntry[]): ComparisonResult {
   return {
     categories,
     answerOptions,
+    secondaryOptions,
+    formHasSecondary,
     isCompatible: overlapCount > 0,
     overlapCount,
     totalQuestionCount: allQuestionIds.size,

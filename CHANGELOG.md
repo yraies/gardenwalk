@@ -14,6 +14,9 @@ Detailed historical notes are preserved in `CHANGELOG_ARCHIVE.md`.
 
 ### Added
 
+- Selection buttons in each question row now live in a fixed-width slot at the right of the question text, so buttons line up across rows even when some rows are read-only or unanswered.
+- Each answer option now has a per-option Display setting (Label or Icon) configured in the template editor. The previous global icon/text viewer toggle has been removed in favor of this per-option preference.
+- Templates may optionally define a secondary template-wide answer schema independent of the primary schema. When a template defines one, forms created from it carry that schema; fillers opt into the secondary row per form via an "Include secondary answers" toggle on the form page (locked once the form is published). Shared and admin readonly views and the compare view auto-hide the secondary column for forms that have no non-unset secondary answers. CSV export adds a Secondary column when the form has any secondary answer. Built-in starter templates ship with a default 3-value "Want less / Just right / Want more" secondary schema. Older artifacts without a secondary schema continue loading.
 - Four seasonal color themes (Spring, Summer, Autumn, Winter) selectable via a global theme switcher below the "Garden Walk" brand. Theme persists in browser localStorage with flash-free hydration. All UI components use semantic color tokens that resolve per theme.
 - Recent forms now persist entirely via browser storage metadata, including published-form recents without storing published plaintext locally.
 - Screen reader users can now navigate the app with proper ARIA landmarks, dialog roles on modals, labeled form inputs, status announcements for loading states, and live error regions.

@@ -134,6 +134,51 @@ export const DEFAULT_ANSWER_OPTIONS: AnswerOption[] = [
 ];
 
 /**
+ * Default secondary answer options. Used as the prefill when a template
+ * creator enables the secondary answer row. A simple 3-point "trend" scale
+ * (Want less / Just right / Want more) plus the required unset entry.
+ * Defaults to icon display so the secondary row reads compactly next to the
+ * primary answer.
+ */
+export const DEFAULT_SECONDARY_OPTIONS: AnswerOption[] = [
+  {
+    key: "less",
+    label: "Want less",
+    shortLabel: "Less",
+    color: "#aa6c67",
+    icon: "minus",
+    semantic: "dislike",
+    display: "icon",
+  },
+  {
+    key: "right",
+    label: "Just right",
+    shortLabel: "Right",
+    color: "#6a9878",
+    icon: "check",
+    semantic: "neutral",
+    display: "icon",
+  },
+  {
+    key: "more",
+    label: "Want more",
+    shortLabel: "More",
+    color: "#8d4f3f",
+    icon: "exclamation",
+    semantic: "must",
+    display: "icon",
+  },
+  {
+    key: "unset",
+    label: "Unset",
+    shortLabel: "Unset",
+    color: "#b39a84",
+    icon: "empty",
+    display: "icon",
+  },
+];
+
+/**
  * Returns the effective answer options for a form, falling back to defaults.
  */
 export function getEffectiveAnswerOptions(
@@ -167,6 +212,44 @@ export function nextSelectionKey(
   return options[(currentIndex + 1) % options.length].key;
 }
 
+/**
+ * Returns the resolved secondary options for a form. Unlike the primary
+ * answer options, secondary options have no implicit fallback: if the
+ * template did not opt in, this returns undefined and no secondary row
+ * should render.
+ */
+export function getEffectiveSecondaryOptions(
+  secondaryOptions: AnswerOption[] | undefined,
+): AnswerOption[] | undefined {
+  return secondaryOptions && secondaryOptions.length > 0
+    ? secondaryOptions
+    : undefined;
+}
+
+/** Returns the secondary "unset" key, or undefined if secondary is disabled. */
+export function getSecondaryUnsetKey(
+  secondaryOptions: AnswerOption[] | undefined,
+): string | undefined {
+  const options = getEffectiveSecondaryOptions(secondaryOptions);
+  return options ? options[options.length - 1].key : undefined;
+}
+
+/** Cycles through secondary options. Returns undefined if secondary is disabled. */
+export function nextSecondarySelectionKey(
+  currentKey: string | undefined,
+  secondaryOptions: AnswerOption[] | undefined,
+): string | undefined {
+  const options = getEffectiveSecondaryOptions(secondaryOptions);
+  if (!options) return undefined;
+  const fallback = options[options.length - 1].key;
+  const currentIndex =
+    currentKey === undefined
+      ? -1
+      : options.findIndex((o) => o.key === currentKey);
+  if (currentIndex === -1) return fallback;
+  return options[(currentIndex + 1) % options.length].key;
+}
+
 type TypeIdPOJO = { prefix: string; suffix: string };
 
 const QuestionIDLiteral = "question";
@@ -175,17 +258,27 @@ export type QuestionPOJO = {
   id: TypeIdPOJO;
   selection: string;
   value: string;
+  /** Optional secondary answer key. Absent when the template has no secondary schema. */
+  secondarySelection?: string;
 };
 
 class Question {
   readonly id: QuestionID;
   readonly selection: string;
   readonly value: string;
+  /** Secondary answer key, or undefined when no secondary schema applies. */
+  readonly secondarySelection?: string;
 
-  private constructor(id: QuestionID, selection: string, value: string) {
+  private constructor(
+    id: QuestionID,
+    selection: string,
+    value: string,
+    secondarySelection?: string,
+  ) {
     this.id = id;
     this.selection = selection;
     this.value = value;
+    this.secondarySelection = secondarySelection;
   }
 
   static new(value: string, unsetKey = Selection.UNSET as string): Question {
@@ -201,7 +294,11 @@ class Question {
     return new Question(new TypeID(QuestionIDLiteral, suffix), unsetKey, value);
   }
 
-  static fromPOJO(obj: QuestionPOJO, answerOptions?: AnswerOption[]): Question {
+  static fromPOJO(
+    obj: QuestionPOJO,
+    answerOptions?: AnswerOption[],
+    secondaryOptions?: AnswerOption[],
+  ): Question {
     if (obj.id.prefix !== QuestionIDLiteral) {
       throw new Error("Invalid Question ID");
     }
@@ -210,19 +307,45 @@ class Question {
     const selection = validKeys.includes(obj.selection)
       ? obj.selection
       : options[options.length - 1].key;
+
+    // Resolve the secondary selection only if the template defines a
+    // secondary schema. Stored data that lacks a secondary value is left
+    // undefined rather than back-filled with an unset key, so that adding
+    // a secondary schema later doesn't silently mark old questions as
+    // having a (default) secondary answer.
+    let secondarySelection: string | undefined;
+    const sOptions = getEffectiveSecondaryOptions(secondaryOptions);
+    if (sOptions && typeof obj.secondarySelection === "string") {
+      const validSecondary = sOptions.map((o) => o.key);
+      secondarySelection = validSecondary.includes(obj.secondarySelection)
+        ? obj.secondarySelection
+        : sOptions[sOptions.length - 1].key;
+    }
+
     return new Question(
       new TypeID(obj.id.prefix, obj.id.suffix),
       selection,
       obj.value,
+      secondarySelection,
     );
   }
 
   withSelection(selection: string): Question {
-    return new Question(this.id, selection, this.value);
+    return new Question(
+      this.id,
+      selection,
+      this.value,
+      this.secondarySelection,
+    );
   }
 
   withValue(value: string): Question {
-    return new Question(this.id, this.selection, value);
+    return new Question(
+      this.id,
+      this.selection,
+      value,
+      this.secondarySelection,
+    );
   }
 
   withNextSelection(answerOptions?: AnswerOption[]): Question {
@@ -230,7 +353,27 @@ class Question {
       this.id,
       nextSelectionKey(this.selection, answerOptions),
       this.value,
+      this.secondarySelection,
     );
+  }
+
+  withSecondarySelection(secondarySelection: string | undefined): Question {
+    return new Question(
+      this.id,
+      this.selection,
+      this.value,
+      secondarySelection,
+    );
+  }
+
+  withNextSecondarySelection(
+    secondaryOptions: AnswerOption[] | undefined,
+  ): Question {
+    const next = nextSecondarySelectionKey(
+      this.secondarySelection,
+      secondaryOptions,
+    );
+    return new Question(this.id, this.selection, this.value, next);
   }
 
   /** @deprecated Use nextSelectionKey() with answer options instead. */
@@ -286,14 +429,20 @@ class Category {
     return new Category(new TypeID(CategoryIDLiteral, suffix), name, questions);
   }
 
-  static fromPOJO(obj: CategoryPOJO, answerOptions?: AnswerOption[]): Category {
+  static fromPOJO(
+    obj: CategoryPOJO,
+    answerOptions?: AnswerOption[],
+    secondaryOptions?: AnswerOption[],
+  ): Category {
     if (obj.id.prefix !== CategoryIDLiteral) {
       throw new Error("Invalid Category ID");
     }
     return new Category(
       new TypeID(obj.id.prefix, obj.id.suffix),
       obj.name,
-      obj.questions.map((q) => Question.fromPOJO(q, answerOptions)),
+      obj.questions.map((q) =>
+        Question.fromPOJO(q, answerOptions, secondaryOptions),
+      ),
     );
   }
 
@@ -349,11 +498,15 @@ class Category {
     return new Category(
       this.id,
       this.name,
-      this.questions.map((question) =>
-        question.selection === unsetKey
-          ? question
-          : question.withSelection(unsetKey),
-      ),
+      this.questions.map((question) => {
+        const cleared =
+          question.selection === unsetKey
+            ? question
+            : question.withSelection(unsetKey);
+        return cleared.secondarySelection === undefined
+          ? cleared
+          : cleared.withSecondarySelection(undefined);
+      }),
     );
   }
 }
@@ -362,6 +515,14 @@ export type FormPOJO = {
   name: string;
   categories: CategoryPOJO[];
   answerOptions?: AnswerOption[];
+  /** Optional secondary answer schema for templates that opt in. */
+  secondaryOptions?: AnswerOption[];
+  /**
+   * Filler-controlled toggle: when true, the form-fill UI shows a second
+   * selection button per question. Only meaningful when secondaryOptions
+   * is defined.
+   */
+  secondaryInputEnabled?: boolean;
   templateName?: string;
   respondentName?: string;
   description?: string;
@@ -371,6 +532,8 @@ class Form {
   readonly name: string;
   readonly categories: Category[];
   readonly answerOptions?: AnswerOption[];
+  readonly secondaryOptions?: AnswerOption[];
+  readonly secondaryInputEnabled?: boolean;
   readonly templateName?: string;
   readonly respondentName?: string;
   readonly description?: string;
@@ -379,6 +542,8 @@ class Form {
     name: string,
     categories: Category[],
     answerOptions?: AnswerOption[],
+    secondaryOptions?: AnswerOption[],
+    secondaryInputEnabled?: boolean,
     templateName?: string,
     respondentName?: string,
     description?: string,
@@ -386,6 +551,8 @@ class Form {
     this.name = name;
     this.categories = categories;
     this.answerOptions = answerOptions;
+    this.secondaryOptions = secondaryOptions;
+    this.secondaryInputEnabled = secondaryInputEnabled;
     this.templateName = templateName;
     this.respondentName = respondentName;
     this.description = description;
@@ -396,11 +563,14 @@ class Form {
     categories: Category[],
     answerOptions?: AnswerOption[],
     description?: string,
+    secondaryOptions?: AnswerOption[],
   ): Form {
     return new Form(
       name,
       categories,
       answerOptions,
+      secondaryOptions,
+      undefined,
       undefined,
       undefined,
       description,
@@ -408,10 +578,17 @@ class Form {
   }
 
   static fromPOJO(obj: FormPOJO): Form {
+    const secondaryOptions = getEffectiveSecondaryOptions(obj.secondaryOptions);
     return new Form(
       obj.name,
-      obj.categories.map((c) => Category.fromPOJO(c, obj.answerOptions)),
+      obj.categories.map((c) =>
+        Category.fromPOJO(c, obj.answerOptions, secondaryOptions),
+      ),
       obj.answerOptions,
+      secondaryOptions,
+      typeof obj.secondaryInputEnabled === "boolean"
+        ? obj.secondaryInputEnabled
+        : undefined,
       obj.templateName,
       obj.respondentName,
       typeof obj.description === "string" ? obj.description : undefined,
@@ -427,6 +604,8 @@ class Form {
       name,
       this.categories,
       this.answerOptions,
+      this.secondaryOptions,
+      this.secondaryInputEnabled,
       this.templateName,
       this.respondentName,
       this.description,
@@ -438,6 +617,8 @@ class Form {
       this.name,
       this.categories,
       this.answerOptions,
+      this.secondaryOptions,
+      this.secondaryInputEnabled,
       this.templateName,
       this.respondentName,
       description,
@@ -449,6 +630,8 @@ class Form {
       this.name,
       categories,
       this.answerOptions,
+      this.secondaryOptions,
+      this.secondaryInputEnabled,
       this.templateName,
       this.respondentName,
       this.description,
@@ -460,6 +643,34 @@ class Form {
       this.name,
       this.categories,
       answerOptions,
+      this.secondaryOptions,
+      this.secondaryInputEnabled,
+      this.templateName,
+      this.respondentName,
+      this.description,
+    );
+  }
+
+  withSecondaryOptions(secondaryOptions: AnswerOption[] | undefined): Form {
+    return new Form(
+      this.name,
+      this.categories,
+      this.answerOptions,
+      secondaryOptions,
+      this.secondaryInputEnabled,
+      this.templateName,
+      this.respondentName,
+      this.description,
+    );
+  }
+
+  withSecondaryInputEnabled(enabled: boolean | undefined): Form {
+    return new Form(
+      this.name,
+      this.categories,
+      this.answerOptions,
+      this.secondaryOptions,
+      enabled,
       this.templateName,
       this.respondentName,
       this.description,
@@ -471,6 +682,8 @@ class Form {
       this.name,
       this.categories,
       this.answerOptions,
+      this.secondaryOptions,
+      this.secondaryInputEnabled,
       templateName,
       this.respondentName,
       this.description,
@@ -482,6 +695,8 @@ class Form {
       this.name,
       this.categories,
       this.answerOptions,
+      this.secondaryOptions,
+      this.secondaryInputEnabled,
       this.templateName,
       respondentName,
       this.description,
@@ -499,6 +714,8 @@ class Form {
       this.name,
       updatedCategories,
       this.answerOptions,
+      this.secondaryOptions,
+      this.secondaryInputEnabled,
       this.templateName,
       this.respondentName,
       this.description,
@@ -521,6 +738,8 @@ class Form {
       this.name,
       newCategories,
       this.answerOptions,
+      this.secondaryOptions,
+      this.secondaryInputEnabled,
       this.templateName,
       this.respondentName,
       this.description,
@@ -532,6 +751,8 @@ class Form {
       this.name,
       [...this.categories, category],
       this.answerOptions,
+      this.secondaryOptions,
+      this.secondaryInputEnabled,
       this.templateName,
       this.respondentName,
       this.description,
@@ -543,6 +764,8 @@ class Form {
       this.name,
       this.categories.filter((c) => c.id !== categoryID),
       this.answerOptions,
+      this.secondaryOptions,
+      this.secondaryInputEnabled,
       this.templateName,
       this.respondentName,
       this.description,
@@ -555,6 +778,8 @@ class Form {
       this.name,
       this.categories.map((category) => category.withoutAnswers(unsetKey)),
       this.answerOptions,
+      this.secondaryOptions,
+      this.secondaryInputEnabled,
       this.templateName,
       this.respondentName,
       this.description,
@@ -613,6 +838,27 @@ class Form {
     tsRepresentation.push("]);");
     return tsRepresentation.join("\n");
   }
+}
+
+/**
+ * Returns true when the form has at least one non-unset secondary answer.
+ * Used by shared/read-only and compare views to hide the secondary row
+ * for forms that did not actually use it.
+ */
+export function formHasSecondaryAnswers(form: Form): boolean {
+  const unsetKey = getSecondaryUnsetKey(form.secondaryOptions);
+  if (unsetKey === undefined) return false;
+  for (const category of form.categories) {
+    for (const question of category.questions) {
+      if (
+        question.secondarySelection !== undefined &&
+        question.secondarySelection !== unsetKey
+      ) {
+        return true;
+      }
+    }
+  }
+  return false;
 }
 
 export type { CategoryID, QuestionID };

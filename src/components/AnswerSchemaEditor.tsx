@@ -10,6 +10,7 @@ import {
   type AnswerOption,
   type AnswerSemantic,
   DEFAULT_ANSWER_OPTIONS,
+  DEFAULT_SECONDARY_OPTIONS,
   getEffectiveAnswerOptions,
   getOptionDisplay,
   PRESET_COLORS,
@@ -29,7 +30,13 @@ const SEMANTIC_TIERS: { key: AnswerSemantic; label: string }[] = [
 interface AnswerSchemaEditorProps {
   answerOptions: AnswerOption[] | undefined;
   onChange: (options: AnswerOption[] | undefined) => void;
-  disabled?: boolean;
+  /**
+   * "primary" (default) is the always-on main answer schema, falling back
+   * to DEFAULT_ANSWER_OPTIONS when undefined. "secondary" is an optional
+   * second schema: it shows as off/disabled when undefined, and "off" is a
+   * valid state (no secondary row in forms).
+   */
+  variant?: "primary" | "secondary";
 }
 
 /** Inline picker for semantic tier / color presets + free color + icon selection. */
@@ -162,17 +169,29 @@ function ColorIconPicker({
 export default function AnswerSchemaEditor({
   answerOptions,
   onChange,
-  disabled = false,
+  variant = "primary",
 }: AnswerSchemaEditorProps) {
   const { getChipColor } = useTheme();
   const [isExpanded, setIsExpanded] = useState(false);
   /** Index of the option row whose color/icon picker is open, or null. */
   const [pickerOpenIndex, setPickerOpenIndex] = useState<number | null>(null);
-  const effectiveOptions = getEffectiveAnswerOptions(answerOptions);
+  const isSecondary = variant === "secondary";
+  const sectionLabel = isSecondary
+    ? "Secondary Response Options"
+    : "Response Options";
+  const defaultsForVariant = isSecondary
+    ? DEFAULT_SECONDARY_OPTIONS
+    : DEFAULT_ANSWER_OPTIONS;
   const isCustom = answerOptions !== undefined && answerOptions.length > 0;
 
+  // Secondary variant only renders option rows when enabled (isCustom).
+  // Primary variant always falls back to the built-in defaults.
+  const effectiveOptions = isSecondary
+    ? (answerOptions ?? [])
+    : getEffectiveAnswerOptions(answerOptions);
+
   const enableCustom = () => {
-    onChange([...DEFAULT_ANSWER_OPTIONS]);
+    onChange([...defaultsForVariant]);
     setIsExpanded(true);
   };
 
@@ -264,39 +283,6 @@ export default function AnswerSchemaEditor({
     onChange(updated);
   };
 
-  if (disabled) {
-    return (
-      <div className="document-sheet no-print mb-2 border border-th-line bg-th-paper px-4 py-3 print:hidden">
-        <p className="text-sm font-semibold text-th-ink-muted">
-          Response Options
-        </p>
-        <div className="mt-2 flex flex-wrap gap-2">
-          {effectiveOptions.map((option, index) => {
-            const isLast = index === effectiveOptions.length - 1;
-            return (
-              <span
-                key={option.key}
-                className="inline-flex items-center gap-1 border border-th-line px-2 py-1 text-sm"
-              >
-                <span
-                  className="inline-block h-3 w-3 rounded-sm"
-                  style={{ backgroundColor: getSwatchColor(option, isLast) }}
-                  aria-hidden="true"
-                />
-                {option.label}
-              </span>
-            );
-          })}
-        </div>
-        {isCustom && (
-          <p className="mt-1 text-xs text-th-ink-muted">
-            Custom response options are in use.
-          </p>
-        )}
-      </div>
-    );
-  }
-
   return (
     <div className="document-sheet no-print mb-2 border border-th-line bg-th-paper px-4 py-3 print:hidden">
       <div className="flex items-center justify-between">
@@ -305,7 +291,14 @@ export default function AnswerSchemaEditor({
           className="text-sm font-semibold text-th-ink-muted hover:text-th-ink"
           onClick={() => setIsExpanded(!isExpanded)}
         >
-          Response Options {isCustom ? "(custom)" : "(default)"}{" "}
+          {sectionLabel}{" "}
+          {isSecondary
+            ? isCustom
+              ? "(on)"
+              : "(off)"
+            : isCustom
+              ? "(custom)"
+              : "(default)"}{" "}
           {isExpanded ? "▾" : "▸"}
         </button>
         {!isCustom && !isExpanded && (
@@ -314,7 +307,7 @@ export default function AnswerSchemaEditor({
             className="text-xs text-th-info hover:text-th-info"
             onClick={enableCustom}
           >
-            Customize
+            {isSecondary ? "Enable" : "Customize"}
           </button>
         )}
       </div>
@@ -332,7 +325,7 @@ export default function AnswerSchemaEditor({
                 className="text-xs text-th-danger hover:text-th-danger"
                 onClick={resetToDefaults}
               >
-                Reset to defaults
+                {isSecondary ? "Disable secondary" : "Reset to defaults"}
               </button>
             </div>
           )}
@@ -340,14 +333,16 @@ export default function AnswerSchemaEditor({
           {!isCustom && (
             <div className="flex items-center justify-between">
               <p className="text-xs text-th-ink-muted">
-                Currently using the built-in response options.
+                {isSecondary
+                  ? "Secondary answers are off. Enable to let fillers add a second answer per question."
+                  : "Currently using the built-in response options."}
               </p>
               <button
                 type="button"
                 className="text-xs text-th-info hover:text-th-info"
                 onClick={enableCustom}
               >
-                Customize
+                {isSecondary ? "Enable" : "Customize"}
               </button>
             </div>
           )}

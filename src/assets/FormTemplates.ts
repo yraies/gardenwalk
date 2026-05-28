@@ -1,4 +1,10 @@
-import { type AnswerOption, Category, Form, Question } from "../types/Form";
+import {
+  type AnswerOption,
+  Category,
+  DEFAULT_SECONDARY_OPTIONS,
+  Form,
+  Question,
+} from "../types/Form";
 
 /**
  * Creates a deterministic TypeID suffix from a template index and item index.
@@ -114,6 +120,7 @@ const RelationshipMenuLight = Form.new(
   ],
   undefined,
   "Name what you want and don't want by having a walk through 8 short categories.",
+  DEFAULT_SECONDARY_OPTIONS,
 );
 
 // Template 1: Relationship Menu (Advanced)
@@ -261,6 +268,7 @@ const RelationshipMenuAdvanced = Form.new(
   ],
   undefined,
   "Name what you want and don't want by having a walk through 13 more detailed categories.",
+  DEFAULT_SECONDARY_OPTIONS,
 );
 
 // Template 4: Pen and Paper Preferences
@@ -323,6 +331,7 @@ const PenAndPaperTemplate = Form.new(
   ],
   undefined,
   "Compare preferences, comfort zones, and expectations before a pen and paper RPG campaign.",
+  DEFAULT_SECONDARY_OPTIONS,
 );
 
 // Template 5: Attraction Map — untangling what draws you to someone
@@ -705,6 +714,7 @@ const SharedConnectionTemplate = Form.new(
   ],
   SharedConnectionAnswerOptions,
   "Look at what you enjoy int your connection: attention, comfort, growth, play, meaning, care, identity, commitment and boundaries.",
+  DEFAULT_SECONDARY_OPTIONS,
 );
 
 /*

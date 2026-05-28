@@ -18,6 +18,8 @@ function CategoryBox({
   structureEditable,
   showPrintResponseSpace,
   answerOptions,
+  secondaryOptions,
+  secondaryInputEnabled,
 }: {
   category: Category;
   setDocument?: Dispatch<SetStateAction<Form>>;
@@ -25,6 +27,8 @@ function CategoryBox({
   structureEditable: boolean;
   showPrintResponseSpace: boolean;
   answerOptions?: AnswerOption[];
+  secondaryOptions?: AnswerOption[];
+  secondaryInputEnabled?: boolean;
 }) {
   const questionBlock = category.questions.map((question) => (
     <QuestionLine
@@ -44,6 +48,8 @@ function CategoryBox({
       structureEditable={structureEditable}
       showPrintResponseSpace={showPrintResponseSpace}
       answerOptions={answerOptions}
+      secondaryOptions={secondaryOptions}
+      secondaryInputEnabled={secondaryInputEnabled}
     />
   ));
 

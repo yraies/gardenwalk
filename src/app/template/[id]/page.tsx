@@ -23,6 +23,7 @@ import PageActionRails, {
 } from "../../../components/PageActionRails";
 import PasswordModal from "../../../components/PasswordModal";
 import PrintAnswerLegend from "../../../components/PrintAnswerLegend";
+import ResponseOptionsLegend from "../../../components/ResponseOptionsLegend";
 import TemplateShareModal from "../../../components/TemplateShareModal";
 import {
   TemplateContextProvider,
@@ -307,13 +308,29 @@ function TemplatePageContent() {
         />
       }
     >
-      <AnswerSchemaEditor
-        answerOptions={template.answerOptions}
-        onChange={(options) =>
-          setTemplate((prev) => prev.withAnswerOptions(options))
-        }
-        disabled={isFinalized}
-      />
+      {isFinalized ? (
+        <ResponseOptionsLegend
+          answerOptions={template.answerOptions}
+          secondaryOptions={template.secondaryOptions}
+        />
+      ) : (
+        <>
+          <AnswerSchemaEditor
+            answerOptions={template.answerOptions}
+            onChange={(options) =>
+              setTemplate((prev) => prev.withAnswerOptions(options))
+            }
+          />
+
+          <AnswerSchemaEditor
+            answerOptions={template.secondaryOptions}
+            onChange={(options) =>
+              setTemplate((prev) => prev.withSecondaryOptions(options))
+            }
+            variant="secondary"
+          />
+        </>
+      )}
 
       <PrintAnswerLegend answerOptions={template.answerOptions} />
 
@@ -333,6 +350,7 @@ function TemplatePageContent() {
           )
         }
         answerOptions={template.answerOptions}
+        secondaryOptions={template.secondaryOptions}
       />
 
       <TemplateShareModal

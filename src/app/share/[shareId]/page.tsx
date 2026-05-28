@@ -29,7 +29,11 @@ import {
   useFormContext,
 } from "../../../contexts/FormContext";
 import { computePasswordHash, decryptFormData } from "../../../lib/crypto";
-import { Form, type FormPOJO } from "../../../types/Form";
+import {
+  Form,
+  type FormPOJO,
+  formHasSecondaryAnswers,
+} from "../../../types/Form";
 import {
   exportFormAsCSV,
   exportFormAsJSON,
@@ -423,6 +427,8 @@ function SharedFormPageContent() {
         answerMode="readonly"
         structureEditable={false}
         answerOptions={form.answerOptions}
+        secondaryOptions={form.secondaryOptions}
+        secondaryInputEnabled={formHasSecondaryAnswers(form)}
       />
     </DocumentPageShell>
   );

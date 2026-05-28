@@ -65,6 +65,8 @@ function QuestionLine({
   structureEditable,
   showPrintResponseSpace,
   answerOptions,
+  secondaryOptions,
+  secondaryInputEnabled,
 }: {
   question: Question;
   categoryID: CategoryID;
@@ -73,7 +75,20 @@ function QuestionLine({
   structureEditable: boolean;
   showPrintResponseSpace: boolean;
   answerOptions?: AnswerOption[];
+  secondaryOptions?: AnswerOption[];
+  secondaryInputEnabled?: boolean;
 }) {
+  const showSecondary =
+    answerMode !== "hidden" &&
+    !!secondaryInputEnabled &&
+    !!secondaryOptions &&
+    secondaryOptions.length > 0;
+  const secondaryUnset = secondaryOptions
+    ? secondaryOptions[secondaryOptions.length - 1].key
+    : undefined;
+  const secondarySelection =
+    question.secondarySelection ?? secondaryUnset ?? "unset";
+
   return (
     <li
       key={question.id.toString()}
@@ -136,6 +151,35 @@ function QuestionLine({
             className="h-6 w-6 min-w-4 shrink-0 transition-transform group-hover:scale-75"
             disabled={answerMode !== "editable"}
             answerOptions={answerOptions}
+          />
+        </div>
+      )}
+
+      {/* Secondary answer slot, only rendered when the template defines a
+          secondary schema AND the form has opted in to the secondary row. */}
+      {showSecondary && (
+        <div
+          className={`flex shrink-0 items-center justify-center print:hidden ${
+            secondaryOptions &&
+            secondaryOptions.length > 0 &&
+            getOptionDisplay(secondaryOptions[0]) === "icon"
+              ? "w-10"
+              : "w-20"
+          }`}
+        >
+          <SelectionButton
+            selection={secondarySelection}
+            onClick={() => {
+              if (answerMode !== "editable") return;
+              onChange((cat) =>
+                cat.withQuestion(question.id, (q) =>
+                  q.withNextSecondarySelection(secondaryOptions),
+                ),
+              );
+            }}
+            className="h-6 w-6 min-w-4 shrink-0 transition-transform group-hover:scale-75"
+            disabled={answerMode !== "editable"}
+            answerOptions={secondaryOptions}
           />
         </div>
       )}

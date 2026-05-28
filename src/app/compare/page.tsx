@@ -258,6 +258,19 @@ function ComparisonTable({
   result: ComparisonResult;
   columns: ComparisonColumnDisplay[];
 }) {
+  // Flatten columns into a sequence of cells, inserting an extra "secondary"
+  // cell after the primary cell for each form that has any non-unset
+  // secondary answer. Each entry records its source form index and kind.
+  const cellSpec = columns.flatMap((_column, index) => {
+    const cells: { formIndex: number; kind: "primary" | "secondary" }[] = [
+      { formIndex: index, kind: "primary" },
+    ];
+    if (result.formHasSecondary[index]) {
+      cells.push({ formIndex: index, kind: "secondary" });
+    }
+    return cells;
+  });
+
   return (
     <div className="document-sheet flex flex-col gap-3">
       {result.categories.map((cat) => (
@@ -275,20 +288,30 @@ function ComparisonTable({
             {/* Header row */}
             <div className="flex items-center gap-2 border-b border-th-line px-2 py-1.5 text-xs font-semibold text-th-ink-muted">
               <span className="min-w-0 flex-1">Question</span>
-              {columns.map((column, index) => (
-                <span
-                  key={getColumnTitle(column)}
-                  className="flex w-24 shrink-0 flex-col text-center leading-tight"
-                  title={getColumnTitle(column)}
-                >
-                  <span className="truncate">{column.primary}</span>
-                  {column.secondary && (
-                    <span className="truncate text-[10px] font-normal text-th-ink-muted">
-                      {column.secondary}
+              {cellSpec.map((cell) => {
+                const column = columns[cell.formIndex];
+                const title =
+                  cell.kind === "secondary"
+                    ? `${getColumnTitle(column)} (secondary)`
+                    : getColumnTitle(column);
+                return (
+                  <span
+                    key={`${cell.formIndex}-${cell.kind}`}
+                    className="flex w-24 shrink-0 flex-col text-center leading-tight"
+                    title={title}
+                  >
+                    <span className="truncate">
+                      {column.primary}
+                      {cell.kind === "secondary" ? " · 2°" : ""}
                     </span>
-                  )}
-                </span>
-              ))}
+                    {column.secondary && (
+                      <span className="truncate text-[10px] font-normal text-th-ink-muted">
+                        {column.secondary}
+                      </span>
+                    )}
+                  </span>
+                );
+              })}
             </div>
             {/* Question rows */}
             {cat.rows.map((row) => {
@@ -300,17 +323,38 @@ function ComparisonTable({
                   <span className="min-w-0 flex-1 text-sm">
                     {row.questionText}
                   </span>
-                  {row.selections.map((sel, i) => (
-                    <span
-                      key={getColumnTitle(columns[i])}
-                      className="flex w-24 shrink-0 justify-center"
-                    >
-                      <SelectionCell
-                        selectionKey={sel}
-                        answerOptions={result.answerOptions}
-                      />
-                    </span>
-                  ))}
+                  {cellSpec.map((cell) => {
+                    if (cell.kind === "primary") {
+                      const sel = row.selections[cell.formIndex];
+                      return (
+                        <span
+                          key={`${cell.formIndex}-primary`}
+                          className="flex w-24 shrink-0 justify-center"
+                        >
+                          <SelectionCell
+                            selectionKey={sel}
+                            answerOptions={result.answerOptions}
+                          />
+                        </span>
+                      );
+                    }
+                    const secSel = row.secondarySelections[cell.formIndex];
+                    return (
+                      <span
+                        key={`${cell.formIndex}-secondary`}
+                        className="flex w-24 shrink-0 justify-center"
+                      >
+                        {secSel !== undefined ? (
+                          <SelectionCell
+                            selectionKey={secSel}
+                            answerOptions={result.secondaryOptions}
+                          />
+                        ) : (
+                          <span className="text-th-ink-muted">—</span>
+                        )}
+                      </span>
+                    );
+                  })}
                 </div>
               );
             })}

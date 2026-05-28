@@ -256,6 +256,7 @@ function SharedTemplatePageContent() {
         answerMode="hidden"
         structureEditable={false}
         answerOptions={template.answerOptions}
+        secondaryOptions={template.secondaryOptions}
       />
     </DocumentPageShell>
   );

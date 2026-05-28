@@ -2,6 +2,7 @@ import { typeid } from "typeid-js";
 import {
   Form,
   type FormPOJO,
+  formHasSecondaryAnswers,
   getEffectiveAnswerOptions,
   getUnsetKey,
 } from "../types/Form";
@@ -47,17 +48,31 @@ export function prepareFormClone(form: Form): string {
  */
 export function exportFormAsCSV(form: Form): void {
   const options = getEffectiveAnswerOptions(form.answerOptions);
-  // Build CSV content: Category, Question, Selection
-  const csvLines = ["Category,Question,Selection"];
+  const includeSecondary = formHasSecondaryAnswers(form);
+  const secondaryOptions = form.secondaryOptions ?? [];
+  // Build CSV header. Only include Secondary column when the form has any
+  // non-unset secondary answer.
+  const header = includeSecondary
+    ? "Category,Question,Selection,Secondary"
+    : "Category,Question,Selection";
+  const csvLines = [header];
 
   form.categories.forEach((category) => {
     category.questions.forEach((question) => {
       const option = options.find((o) => o.key === question.selection);
       const selectionLabel = option ? option.label : question.selection;
-      // Escape quotes in category/question text
       const cat = `"${category.name.replace(/"/g, '""')}"`;
       const q = `"${question.value.replace(/"/g, '""')}"`;
-      csvLines.push(`${cat},${q},${selectionLabel}`);
+      if (includeSecondary) {
+        const secKey = question.secondarySelection;
+        const secOption = secKey
+          ? secondaryOptions.find((o) => o.key === secKey)
+          : undefined;
+        const secLabel = secOption?.label ?? (secKey ? secKey : "");
+        csvLines.push(`${cat},${q},${selectionLabel},${secLabel}`);
+      } else {
+        csvLines.push(`${cat},${q},${selectionLabel}`);
+      }
     });
   });
 

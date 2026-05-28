@@ -11,6 +11,15 @@ Normalization policy:
 
 ## Historical Rollup
 
+### Selection Layout, Per-Option Display, and Optional Secondary Answer Row (May 2026, F-034)
+
+Delivered as three sequential commits.
+
+- **Set A — Selection-button layout**: Moved the per-question `SelectionButton` into a fixed-width slot at the right of the question text in `QuestionsLine.tsx`. Print response space repositioned for handwritten answers. Edit toolbar continues to render at the far right of the editor.
+- **Set B — Per-option display setting**: Added `AnswerOption.display` (`"icon" | "text"`, default `"text"`) and a `getOptionDisplay()` helper. `SelectionButton` and `ResponseOptionsLegend` now consult the per-option preference. A per-row Display toggle (Label/Icon) was added to `AnswerSchemaEditor`. The global icon-vs-text viewer toggle and its `DisplayPreferencesContext` were removed.
+- **Set C — Optional secondary answer row**: Added `Form.secondaryOptions`, `Form.secondaryInputEnabled`, `Question.secondarySelection`, plus helpers `getEffectiveSecondaryOptions`, `getSecondaryUnsetKey`, `nextSecondarySelectionKey`, `formHasSecondaryAnswers`, `withSecondarySelection`, `withNextSecondarySelection`, `withSecondaryOptions`, `withSecondaryInputEnabled`. The template editor now mounts a second `AnswerSchemaEditor` (variant `"secondary"`) with Enable/Disable controls. `FormCategoryList → CategoryPage → QuestionsLine` were extended to thread `secondaryOptions`/`secondaryInputEnabled` and render an additional fixed-width selection slot to the right of the primary one. The form-fill page adds an "Include secondary answers" toggle (hidden once published); published/admin/shared readonly views derive secondary-row visibility per form from `formHasSecondaryAnswers`. The compare view renders an additional secondary column per form that has any non-unset secondary answer. CSV export adds a Secondary column when the form has any secondary answer. Built-in starter templates (`RelationshipMenuLight`, `RelationshipMenuAdvanced`, `PenAndPaperTemplate`, `SharedConnectionTemplate`) gained the default secondary schema (`DEFAULT_SECONDARY_OPTIONS`: Want less / Just right / Want more, displayed as icons). Backward compatibility preserved for older artifacts.
+- Tests: round-trip + helper coverage in `formEditing.test.ts` (77/77 passing).
+
 ### Security Hardening Pass 2 (Apr 2026)
 
 Finished the second pass of audit-driven security cleanup across password verification, route input validation, and deployment hygiene.

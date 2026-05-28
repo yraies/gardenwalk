@@ -1,7 +1,9 @@
 import {
   type AnswerOption,
   Category,
+  DEFAULT_SECONDARY_OPTIONS,
   Form,
+  formHasSecondaryAnswers,
   getOptionDisplay,
   getUnsetKey,
   Question,
@@ -130,5 +132,62 @@ describe("template editing model behavior", () => {
 
     expect(form.answerOptions?.[0].display).toBe("icon");
     expect(form.answerOptions?.[1].display).toBe("icon");
+  });
+
+  test("secondary options and selections round-trip through fromPOJO", () => {
+    const form = Form.new(
+      "Template",
+      [Category.new("Category", [Question.new("Question", "unset")])],
+      undefined,
+      undefined,
+      DEFAULT_SECONDARY_OPTIONS,
+    ).withSecondaryInputEnabled(true);
+
+    const q = form.categories[0].questions[0];
+    const formWithSecondary = form.withCategory(form.categories[0].id, (cat) =>
+      cat.withQuestion(q.id, (qq) => qq.withSecondarySelection("more")),
+    );
+
+    expect(formHasSecondaryAnswers(formWithSecondary)).toBe(true);
+
+    const roundTrip = Form.fromPOJO(
+      JSON.parse(JSON.stringify(formWithSecondary)),
+    );
+    expect(roundTrip.secondaryOptions?.length).toBe(
+      DEFAULT_SECONDARY_OPTIONS.length,
+    );
+    expect(roundTrip.secondaryInputEnabled).toBe(true);
+    expect(roundTrip.categories[0].questions[0].secondarySelection).toBe(
+      "more",
+    );
+    expect(formHasSecondaryAnswers(roundTrip)).toBe(true);
+  });
+
+  test("formHasSecondaryAnswers is false when all secondary selections are unset or missing", () => {
+    const form = Form.new(
+      "Template",
+      [Category.new("Category", [Question.new("Question", "unset")])],
+      undefined,
+      undefined,
+      DEFAULT_SECONDARY_OPTIONS,
+    );
+    expect(formHasSecondaryAnswers(form)).toBe(false);
+  });
+
+  test("withoutAnswers clears secondary selections", () => {
+    const form = Form.new(
+      "Template",
+      [Category.new("Category", [Question.new("Question", "unset")])],
+      undefined,
+      undefined,
+      DEFAULT_SECONDARY_OPTIONS,
+    );
+    const q = form.categories[0].questions[0];
+    const withAnswer = form.withCategory(form.categories[0].id, (cat) =>
+      cat.withQuestion(q.id, (qq) => qq.withSecondarySelection("more")),
+    );
+    expect(
+      withAnswer.withoutAnswers().categories[0].questions[0].secondarySelection,
+    ).toBeUndefined();
   });
 });

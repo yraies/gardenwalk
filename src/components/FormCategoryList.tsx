@@ -13,6 +13,9 @@ interface FormCategoryListProps {
   showAddButton?: boolean;
   onAddCategory?: () => void;
   answerOptions?: AnswerOption[];
+  secondaryOptions?: AnswerOption[];
+  /** Whether to render the secondary answer button per question. */
+  secondaryInputEnabled?: boolean;
 }
 
 export default function FormCategoryList({
@@ -24,6 +27,8 @@ export default function FormCategoryList({
   showAddButton = false,
   onAddCategory,
   answerOptions,
+  secondaryOptions,
+  secondaryInputEnabled = false,
 }: FormCategoryListProps) {
   return (
     <main
@@ -31,7 +36,12 @@ export default function FormCategoryList({
       aria-label="Form categories"
     >
       {answerMode !== "hidden" && (
-        <ResponseOptionsLegend answerOptions={answerOptions} />
+        <ResponseOptionsLegend
+          answerOptions={answerOptions}
+          secondaryOptions={
+            secondaryInputEnabled ? secondaryOptions : undefined
+          }
+        />
       )}
 
       {categories.map((category) => (
@@ -43,6 +53,8 @@ export default function FormCategoryList({
           structureEditable={structureEditable}
           showPrintResponseSpace={showPrintResponseSpace}
           answerOptions={answerOptions}
+          secondaryOptions={secondaryOptions}
+          secondaryInputEnabled={secondaryInputEnabled}
         />
       ))}
 

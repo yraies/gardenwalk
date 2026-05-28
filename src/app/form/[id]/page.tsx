@@ -23,7 +23,11 @@ import {
   encryptFormData,
   hashPasswordWithSalt,
 } from "../../../lib/crypto";
-import { Form, type FormPOJO } from "../../../types/Form";
+import {
+  Form,
+  type FormPOJO,
+  formHasSecondaryAnswers,
+} from "../../../types/Form";
 import { getCompareIdentity } from "../../../utils/compareIdentity";
 import {
   computeStructureFingerprint,
@@ -279,12 +283,41 @@ function FormPageContent() {
       >
         <PrintAnswerLegend answerOptions={form.answerOptions} />
 
+        {!isPublished &&
+          form.secondaryOptions &&
+          form.secondaryOptions.length > 0 && (
+            <div className="document-sheet mb-2 flex items-center justify-between gap-3 border border-th-line bg-th-paper px-3 py-2 text-sm print:hidden">
+              <span className="text-th-ink-muted">
+                This template offers an optional secondary answer for each
+                question.
+              </span>
+              <label className="flex items-center gap-2 text-xs">
+                <input
+                  type="checkbox"
+                  checked={!!form.secondaryInputEnabled}
+                  onChange={(e) =>
+                    setForm((prev) =>
+                      prev.withSecondaryInputEnabled(e.target.checked),
+                    )
+                  }
+                />
+                Include secondary answers
+              </label>
+            </div>
+          )}
+
         <FormCategoryList
           setDocument={setForm}
           categories={form.categories}
           answerMode={isPublished ? "readonly" : "editable"}
           structureEditable={false}
           answerOptions={form.answerOptions}
+          secondaryOptions={form.secondaryOptions}
+          secondaryInputEnabled={
+            isPublished
+              ? formHasSecondaryAnswers(form)
+              : !!form.secondaryInputEnabled
+          }
         />
 
         <PasswordModal
