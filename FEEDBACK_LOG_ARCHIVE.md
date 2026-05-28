@@ -36,6 +36,16 @@ Required fields for new entries:
 
 ## Entries
 
+### F-035 (2026-05-29) - Password protection should default off and errors should be visible in modal
+
+- **Date**: 2026-05-29
+- **Source**: Stakeholder chat
+- **Exact Quote**: "please implement last in its own commit. please also make \"with password\" be false by default."
+- **Normalized Intent**: When setting a password during publish/finalize flows, password protection should be opt-in rather than preselected. Password/verification cleanup should be implemented separately from the legend/display consistency work so it remains easy to review or revert.
+- **Feedback**: Password protection remains optional and should not be enabled by default in the modal. Password-related error handling should be more consistent and visible to the user.
+- **Action taken**: Updated `PasswordModal` so set-mode password protection defaults to unchecked and resets to unchecked after cancel/submit. Added modal-level error display and routed shared form, shared template, and compare shared-response verification failures into the modal instead of mixed alerts/global throws where applicable. Committed separately in `7200379`.
+- **Validation**: `npm run build` passed. `npm test` passed (77/77). `npm run lint` still reports only the known pre-existing `layout.tsx` and `ThemeSelector.tsx` findings.
+
 ### F-034 (2026-05-28) - Optional secondary answer row, per-option icon/text display, and selection-button layout
 
 - **Date**: 2026-05-28

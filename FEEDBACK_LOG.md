@@ -25,7 +25,7 @@ Detailed chronological history is preserved in `FEEDBACK_LOG_ARCHIVE.md`.
 - **Workflow preference**: Work should be committed regularly at sensible checkpoints instead of left uncommitted for long stretches. (F-009)
 - **Backlog priority**: Preferred near-term order is `B-017` onboarding/help copy, then `B-022` shared page-layout extraction, then `B-014` password/access-control unification, then `B-021` screen reader support. (F-010)
 - **Access-control direction**: Templates, forms, and their shared links should all use one consistent password/access model rather than separate systems. (F-011)
-- **Access-control direction**: Keep a single server-verified password model across templates, forms, and shared links, but do not expose users to multiple passwords for the same artifact/share flow. (F-012)
+- **Access-control direction**: Keep a single server-verified password model across templates, forms, and shared links, but do not expose users to multiple passwords for the same artifact/share flow. Password protection remains optional and should be opt-in/off by default in set-password flows. (F-012, F-035)
 - **Data ownership and sharing UI**: The share system should be simpler and aligned with the established design system, and users must be able to delete any data they entered through the corresponding non-shared/admin URLs. (F-013)
 - **Share-link simplification**: For now, each document should have one reusable share link rather than a multi-link management UI, and copy actions next to share links must work reliably. (F-014)
 - **Share wording and controls**: Share UI text should match the user mental model directly: create a share link, optionally set expiry, and remove the link again when needed. Avoid abstract wording like "one link". (F-015)
