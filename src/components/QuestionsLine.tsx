@@ -78,26 +78,9 @@ function QuestionLine({
       key={question.id.toString()}
       className="question-line flex flex-row items-center gap-1 px-2 py-1 hover:backdrop-brightness-90"
     >
-      {answerMode !== "hidden" && (
-        <SelectionButton
-          selection={question.selection}
-          onClick={() => {
-            if (answerMode !== "editable") return;
-            onChange((cat) =>
-              cat.withQuestion(question.id, (q) =>
-                q.withNextSelection(answerOptions),
-              ),
-            );
-          }}
-          className="h-6 w-6 min-w-4 shrink-0 transition-transform group-hover:scale-75"
-          disabled={answerMode !== "editable"}
-          answerOptions={answerOptions}
-        />
-      )}
-
       {/* Auto-growing textarea for screen (supports text wrapping) */}
       <AutoGrowTextarea
-        className="paper-field question-text screen-only mx-2 min-w-10 grow resize-none overflow-hidden p-0 leading-snug"
+        className="paper-field question-text screen-only mr-2 min-w-10 grow resize-none overflow-hidden p-0 leading-snug"
         value={question.value}
         placeholder="Question"
         onChange={(e) => {
@@ -124,6 +107,27 @@ function QuestionLine({
           className="print-only print-response-space"
           aria-hidden="true"
         ></div>
+      )}
+
+      {/* Answer slot: fixed width so buttons line up across rows even when
+          some rows render no button (answerMode === "hidden"). */}
+      {answerMode !== "hidden" && (
+        <div className="flex w-20 shrink-0 items-center justify-end print:hidden">
+          <SelectionButton
+            selection={question.selection}
+            onClick={() => {
+              if (answerMode !== "editable") return;
+              onChange((cat) =>
+                cat.withQuestion(question.id, (q) =>
+                  q.withNextSelection(answerOptions),
+                ),
+              );
+            }}
+            className="h-6 w-6 min-w-4 shrink-0 transition-transform group-hover:scale-75"
+            disabled={answerMode !== "editable"}
+            answerOptions={answerOptions}
+          />
+        </div>
       )}
 
       <div
