@@ -388,17 +388,6 @@ function SharedFormPageContent() {
                 variant: "default",
                 icon: <PencilSquareIcon className="h-5 w-5" />,
               },
-              {
-                key: "compare",
-                label: "Compare",
-                onClick: () =>
-                  router.push(
-                    `/compare?forms=${encodeURIComponent(`share:${shareId}`)}`,
-                  ),
-                title: "Compare with other responses",
-                variant: "info",
-                icon: <ScaleIcon className="h-5 w-5" />,
-              },
             ] satisfies RailAction[]
           }
           rightActions={
@@ -418,6 +407,17 @@ function SharedFormPageContent() {
                 title: "Print this view",
                 variant: "default",
                 icon: <PrinterIcon className="h-5 w-5" />,
+              },
+              {
+                key: "compare",
+                label: "Compare",
+                onClick: () =>
+                  router.push(
+                    `/compare?forms=${encodeURIComponent(`share:${shareId}`)}`,
+                  ),
+                title: "Compare with other responses",
+                variant: "info",
+                icon: <ScaleIcon className="h-5 w-5" />,
               },
             ] satisfies RailAction[]
           }

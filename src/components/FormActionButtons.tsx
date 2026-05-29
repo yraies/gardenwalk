@@ -75,21 +75,6 @@ export default function FormActionButtons() {
       variant: "default",
       icon: <PencilSquareIcon className="h-5 w-5" />,
     });
-    leftActions.push({
-      key: "compare",
-      label: "Compare",
-      onClick: () => {
-        if (!formId) return;
-        router.push(
-          `/compare?local=${encodeURIComponent(
-            createCompareSession(localStorage, [formId]),
-          )}`,
-        );
-      },
-      title: "Compare with other responses",
-      variant: "info",
-      icon: <ScaleIcon className="h-5 w-5" />,
-    });
   }
 
   if (handleDelete) {
@@ -132,6 +117,24 @@ export default function FormActionButtons() {
       disabled: isPublishing,
       variant: "success",
       icon: <CloudArrowUpIcon className="h-5 w-5" />,
+    });
+  }
+
+  if (isPublished) {
+    rightActions.push({
+      key: "compare",
+      label: "Compare",
+      onClick: () => {
+        if (!formId) return;
+        router.push(
+          `/compare?local=${encodeURIComponent(
+            createCompareSession(localStorage, [formId]),
+          )}`,
+        );
+      },
+      title: "Compare with other responses",
+      variant: "info",
+      icon: <ScaleIcon className="h-5 w-5" />,
     });
   }
 

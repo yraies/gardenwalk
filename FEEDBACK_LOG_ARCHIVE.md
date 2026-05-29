@@ -36,6 +36,16 @@ Required fields for new entries:
 
 ## Entries
 
+### F-037 (2026-05-29) - Compare action belongs on the right rail
+
+- **Date**: 2026-05-29
+- **Source**: Stakeholder chat
+- **Exact Quote**: "The \"Compare\" button on the left siderail should ideally also be on the right side!"
+- **Normalized Intent**: The Compare action should be grouped on the right-side action rail instead of the left rail, matching the user's expectation that comparison belongs with right-side document/output actions.
+- **Feedback**: Move Compare from the left side rail to the right side rail where it appears on readable/published response pages.
+- **Action taken**: Moved the Compare rail action to the right rail for published form pages and shared form pages.
+- **Follow-up**: Stakeholder clarified, "as for the feedback/guidance: I was thinking that the left should be for steps back in the life cycle, as well as deletion, while the right is generally for going forward, publishing, exporting etc. I hope this is consistent." This establishes the side-rail grouping rule: left rail is for lifecycle-back/copy-back actions and deletion; right rail is for forward/output/share actions such as publish, export, print/share, and compare.
+
 ### F-036 (2026-05-29) - Export should be one right-side action with explanatory modal
 
 - **Date**: 2026-05-29

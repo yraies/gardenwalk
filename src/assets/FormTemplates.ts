@@ -713,7 +713,7 @@ const SharedConnectionTemplate = Form.new(
     ]),
   ],
   SharedConnectionAnswerOptions,
-  "Look at what you enjoy int your connection: attention, comfort, growth, play, meaning, care, identity, commitment and boundaries.",
+  "Look at what you enjoy int your connection: attention, comfort, growth, play, meaning, care, etc.",
   DEFAULT_SECONDARY_OPTIONS,
 );
 
