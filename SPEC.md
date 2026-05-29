@@ -71,7 +71,7 @@ Deployed pre-release (~75% complete). Compatibility now matters for already-crea
 
 #### Data Portability
 
-- **REQ-16: User-Friendly JSON and CSV Export** — Users can export forms and responses as JSON and CSV files through clearly labeled UI actions. Exported data includes all form structure and response data. Status: ✅ implemented.
+- **REQ-16: User-Friendly JSON and CSV Export** — Users can export templates, forms, and responses through one clearly labeled Export action grouped with other right-side output/share actions. The Export action opens an explanatory modal and offers relevant download formats: JSON for full structure/data portability and CSV for form/response tabular review. Exported data includes all relevant structure and response data. Status: ✅ implemented.
 - **REQ-27: JSON Import** — Users can import a previously exported JSON file to create a new local draft (template or form). Importing always creates a fresh draft with a new ID rather than restoring the original artifact. Status: ✅ implemented.
 - **REQ-19: Print-Friendly and Accessible Display Modes** — Browser print plus print CSS must support printed output with handwritten response space. High contrast and simplified display modes remain planned. Status: ✅ partially implemented.
 - **REQ-21: Responsive Design** — Interface works on desktop and mobile. All functionality accessible on mobile. Status: ✅ implemented.
@@ -122,7 +122,7 @@ Deployed pre-release (~75% complete). Compatibility now matters for already-crea
 - Users can delete templates and forms from their direct non-shared URLs.
 - Deleting a form soft-deletes; shared links show a "form deleted" message.
 - Configured auto-delete removes the underlying published form; both admin and shared URLs thereafter show a deleted/unavailable state.
-- JSON and CSV export produce downloadable files with the relevant structure/response data.
+- Export opens an explanatory modal for downloading document data. JSON and CSV export produce downloadable files with the relevant structure/response data.
 - Importing a previously exported JSON file creates a new local draft with a fresh ID, not a restoration of the original artifact.
 - Creating a derived template from a readable form or template creates a new local template draft from that artifact's structure.
 - Creating a new fillable form from a readable form or template creates a new local fillable copy with fresh answers and the source artifact's fixed structure.

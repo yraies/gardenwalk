@@ -11,9 +11,11 @@ import {
 } from "@heroicons/react/16/solid";
 import { useRouter } from "next/navigation";
 import type React from "react";
+import { useState } from "react";
 import { useFormActions } from "../contexts/FormActionsContext";
 import { createCompareSession } from "../utils/compareSession";
 import { printCurrentView } from "../utils/formActions";
+import ExportModal from "./ExportModal";
 import PageActionRails from "./PageActionRails";
 
 type ActionConfig = {
@@ -44,6 +46,7 @@ export default function FormActionButtons() {
   } = useFormActions();
 
   const router = useRouter();
+  const [showExportModal, setShowExportModal] = useState(false);
 
   const leftActions: ActionConfig[] = [];
   if (isPublished) {
@@ -89,25 +92,6 @@ export default function FormActionButtons() {
     });
   }
 
-  leftActions.push(
-    {
-      key: "csv",
-      label: "Export CSV",
-      onClick: handleExportCSV,
-      title: "Export as CSV",
-      variant: "success",
-      icon: <ArrowDownTrayIcon className="h-5 w-5" />,
-    },
-    {
-      key: "json",
-      label: "Export JSON",
-      onClick: handleExportJSON,
-      title: "Export as JSON",
-      variant: "info",
-      icon: <ArrowDownTrayIcon className="h-5 w-5" />,
-    },
-  );
-
   if (handleDelete) {
     leftActions.push({
       key: "delete",
@@ -121,6 +105,15 @@ export default function FormActionButtons() {
   }
 
   const rightActions: ActionConfig[] = [];
+  rightActions.push({
+    key: "export",
+    label: "Export",
+    onClick: () => setShowExportModal(true),
+    title: "Export data",
+    variant: "info",
+    icon: <ArrowDownTrayIcon className="h-5 w-5" />,
+  });
+
   rightActions.push({
     key: "print",
     label: "Print",
@@ -154,6 +147,15 @@ export default function FormActionButtons() {
   }
 
   return (
-    <PageActionRails leftActions={leftActions} rightActions={rightActions} />
+    <>
+      <PageActionRails leftActions={leftActions} rightActions={rightActions} />
+      <ExportModal
+        isOpen={showExportModal}
+        onClose={() => setShowExportModal(false)}
+        onExportCSV={handleExportCSV}
+        onExportJSON={handleExportJSON}
+        documentLabel="this response"
+      />
+    </>
   );
 }

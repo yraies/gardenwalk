@@ -15,6 +15,7 @@ import { typeid } from "typeid-js";
 import DeletedFormMessage from "../../../components/DeletedFormMessage";
 import DocumentPageShell from "../../../components/DocumentPageShell";
 import ErrorMessage from "../../../components/ErrorMessage";
+import ExportModal from "../../../components/ExportModal";
 import FormCategoryList from "../../../components/FormCategoryList";
 import FormPhaseBanner from "../../../components/FormPhaseBanner";
 import LoadingState from "../../../components/LoadingState";
@@ -74,6 +75,7 @@ function SharedFormPageContent() {
   const [isDeleted, setIsDeleted] = React.useState(false);
   const [passwordSalt, setPasswordSalt] = React.useState<string | null>(null);
   const [passwordError, setPasswordError] = React.useState<string | null>(null);
+  const [showExportModal, setShowExportModal] = React.useState(false);
 
   const params = useParams();
   const shareId = params?.shareId as string;
@@ -397,26 +399,18 @@ function SharedFormPageContent() {
                 variant: "info",
                 icon: <ScaleIcon className="h-5 w-5" />,
               },
-              {
-                key: "csv",
-                label: "Export CSV",
-                onClick: () => exportFormAsCSV(form),
-                title: "Export as CSV",
-                variant: "success",
-                icon: <ArrowDownTrayIcon className="h-5 w-5" />,
-              },
-              {
-                key: "json",
-                label: "Export JSON",
-                onClick: () => exportFormAsJSON(form),
-                title: "Export as JSON",
-                variant: "info",
-                icon: <ArrowDownTrayIcon className="h-5 w-5" />,
-              },
             ] satisfies RailAction[]
           }
           rightActions={
             [
+              {
+                key: "export",
+                label: "Export",
+                onClick: () => setShowExportModal(true),
+                title: "Export data",
+                variant: "info",
+                icon: <ArrowDownTrayIcon className="h-5 w-5" />,
+              },
               {
                 key: "print",
                 label: "Print",
@@ -453,6 +447,14 @@ function SharedFormPageContent() {
         answerOptions={form.answerOptions}
         secondaryOptions={form.secondaryOptions}
         secondaryInputEnabled={formHasSecondaryAnswers(form)}
+      />
+
+      <ExportModal
+        isOpen={showExportModal}
+        onClose={() => setShowExportModal(false)}
+        onExportCSV={() => exportFormAsCSV(form)}
+        onExportJSON={() => exportFormAsJSON(form)}
+        documentLabel="this shared response"
       />
     </DocumentPageShell>
   );

@@ -36,6 +36,15 @@ Required fields for new entries:
 
 ## Entries
 
+### F-036 (2026-05-29) - Export should be one right-side action with explanatory modal
+
+- **Date**: 2026-05-29
+- **Source**: Stakeholder chat
+- **Exact Quote**: "the export buttons should always be on the right together with the print and share options. I think there should also be just one button which opens a modal that explains \"export\" is for downloading the form data so users can do with it whatever they want."
+- **Normalized Intent**: Export controls should be grouped with output/share actions on the right rail. Users should see one Export action, not separate CSV/JSON rail buttons. The Export action should open an explanatory modal that frames export as downloading the document data for arbitrary user use, then offers the applicable file formats.
+- **Feedback**: Consolidate export UI and make export purpose clearer.
+- **Action taken**: Added a reusable `ExportModal`, replaced separate CSV/JSON rail buttons with one right-side Export action across form, shared form, template, and shared template pages, and updated requirements docs.
+
 ### F-035 (2026-05-29) - Password protection should default off and errors should be visible in modal
 
 - **Date**: 2026-05-29

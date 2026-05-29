@@ -16,6 +16,7 @@ import { typeid } from "typeid-js";
 import AnswerSchemaEditor from "../../../components/AnswerSchemaEditor";
 import DocumentPageShell from "../../../components/DocumentPageShell";
 import DocumentPhaseBadge from "../../../components/DocumentPhaseBadge";
+import ExportModal from "../../../components/ExportModal";
 import FormCategoryList from "../../../components/FormCategoryList";
 import LoadingState from "../../../components/LoadingState";
 import PageActionRails, {
@@ -62,6 +63,7 @@ function TemplatePageContent() {
   const [isFinalizing, setIsFinalizing] = React.useState(false);
   const [showPasswordModal, setShowPasswordModal] = React.useState(false);
   const [showShareModal, setShowShareModal] = React.useState(false);
+  const [showExportModal, setShowExportModal] = React.useState(false);
   const router = useRouter();
   const params = useParams();
   const templateId = params?.id as string;
@@ -228,19 +230,19 @@ function TemplatePageContent() {
                 variant: "danger",
                 icon: <TrashIcon className="h-5 w-5" />,
               },
-              {
-                key: "json",
-                label: "Export JSON",
-                onClick: () => exportFormAsJSON(template),
-                title: "Export as JSON",
-                variant: "info",
-                icon: <ArrowDownTrayIcon className="h-5 w-5" />,
-              },
             ] satisfies RailAction[]
           }
           rightActions={
             isFinalized
               ? ([
+                  {
+                    key: "export",
+                    label: "Export",
+                    onClick: () => setShowExportModal(true),
+                    title: "Export data",
+                    variant: "info",
+                    icon: <ArrowDownTrayIcon className="h-5 w-5" />,
+                  },
                   {
                     key: "print-template",
                     label: "Print",
@@ -275,6 +277,14 @@ function TemplatePageContent() {
                   },
                 ] satisfies RailAction[])
               : ([
+                  {
+                    key: "export",
+                    label: "Export",
+                    onClick: () => setShowExportModal(true),
+                    title: "Export data",
+                    variant: "info",
+                    icon: <ArrowDownTrayIcon className="h-5 w-5" />,
+                  },
                   {
                     key: "print-template",
                     label: "Print",
@@ -362,6 +372,13 @@ function TemplatePageContent() {
         templateId={templateId}
         templateName={template.name}
         requiresPassword={isEncrypted}
+      />
+
+      <ExportModal
+        isOpen={showExportModal}
+        onClose={() => setShowExportModal(false)}
+        onExportJSON={() => exportFormAsJSON(template)}
+        documentLabel="this template"
       />
 
       <PasswordModal

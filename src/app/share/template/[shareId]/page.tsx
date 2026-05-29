@@ -13,6 +13,7 @@ import { typeid } from "typeid-js";
 import DocumentPageShell from "../../../../components/DocumentPageShell";
 import DocumentPhaseNotice from "../../../../components/DocumentPhaseNotice";
 import ErrorMessage from "../../../../components/ErrorMessage";
+import ExportModal from "../../../../components/ExportModal";
 import FormCategoryList from "../../../../components/FormCategoryList";
 import LoadingState from "../../../../components/LoadingState";
 import PageActionRails, {
@@ -49,6 +50,7 @@ function SharedTemplatePageContent() {
     React.useState(false);
   const [passwordSalt, setPasswordSalt] = React.useState<string | null>(null);
   const [passwordError, setPasswordError] = React.useState<string | null>(null);
+  const [showExportModal, setShowExportModal] = React.useState(false);
   const router = useRouter();
   const params = useParams();
   const shareId = params?.shareId as string;
@@ -202,20 +204,16 @@ function SharedTemplatePageContent() {
       readOnly={true}
       actions={
         <PageActionRails
-          leftActions={
+          rightActions={
             [
               {
-                key: "json",
-                label: "Export JSON",
-                onClick: () => exportFormAsJSON(template),
-                title: "Export as JSON",
+                key: "export",
+                label: "Export",
+                onClick: () => setShowExportModal(true),
+                title: "Export data",
                 variant: "info",
                 icon: <ArrowDownTrayIcon className="h-5 w-5" />,
               },
-            ] satisfies RailAction[]
-          }
-          rightActions={
-            [
               {
                 key: "print-template",
                 label: "Print",
@@ -269,6 +267,13 @@ function SharedTemplatePageContent() {
         structureEditable={false}
         answerOptions={template.answerOptions}
         secondaryOptions={template.secondaryOptions}
+      />
+
+      <ExportModal
+        isOpen={showExportModal}
+        onClose={() => setShowExportModal(false)}
+        onExportJSON={() => exportFormAsJSON(template)}
+        documentLabel="this shared template"
       />
     </DocumentPageShell>
   );

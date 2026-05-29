@@ -75,6 +75,6 @@ See `SPEC.md` section 3 for detailed acceptance behaviors. Key outcomes:
 - Templates are editable structure-only artifacts with optional framing descriptions; forms are fixed-structure answerable artifacts created from finalized templates.
 - Built-in starter templates with valid structure can begin either a local template draft or a local fillable form from the home page; the empty starter stays template-draft-only.
 - Stored artifact data is encrypted before storage; optional password protection may further restrict access.
-- JSON and CSV export are available through user-friendly UI.
+- JSON and CSV export are available through one right-side Export action with an explanatory modal.
 - Comparison shows raw responses side by side to support conversation, not algorithmic agreement scoring.
 - UI is responsive on desktop and mobile.
