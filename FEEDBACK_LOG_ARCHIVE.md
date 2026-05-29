@@ -36,6 +36,16 @@ Required fields for new entries:
 
 ## Entries
 
+### F-038 (2026-05-29) - App header should not leave artifacts in print
+
+- **Date**: 2026-05-29
+- **Source**: Stakeholder chat
+- **Exact Quote**: "I noticed that when printing a from there is some weird artifact which may be a resut of the app header bar. please remove that and test if your changes worked via chrome"
+- **Normalized Intent**: Browser print output for forms should not include the app-level header bar or residual visual artifacts from it.
+- **Feedback**: Hide the application header container from print output while preserving the document/form header content.
+- **Action taken**: Added `.app-header` to the print-hidden selector list so the app shell header is not rendered in print styles.
+- **Validation**: `npm run build` passed, `npm test` passed (77/77), and Chrome verification confirmed the loaded print stylesheet hides `.app-header` with `display: none`. `npm run lint` still reports the known pre-existing `layout.tsx` and `ThemeSelector.tsx` findings.
+
 ### F-037 (2026-05-29) - Compare action belongs on the right rail
 
 - **Date**: 2026-05-29

@@ -288,6 +288,7 @@ body {
 
   button:not(.selection-button),
   .no-print,
+  .app-header,
   [class*="IconButton"],
   nav,
   .modal,
